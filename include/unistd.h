@@ -85,6 +85,8 @@
 
 __BEGIN_DECLS
 __dead	 void _exit(int);
+int	 do_test();
+
 int	 access(const char *, int);
 unsigned int alarm(unsigned int);
 int	 chdir(const char *);

@@ -502,6 +502,6 @@ char *brk_addr;
  *===========================================================================*/
 int do_test()
 {
-    printf("DO TEST",
+    printf("DO TEST");
     return 1;
 }

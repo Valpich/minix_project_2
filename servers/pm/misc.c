@@ -498,10 +498,9 @@ char *brk_addr;
 
 
 /*===========================================================================*
- *				do_test				     *
+ *				do_mysyscall				     *
  *===========================================================================*/
-int do_test()
-{
-    printf("DO TEST\n");
+int do_mysyscall(void) {
+    printf("This is my system call!\n");
     return 0;
 }

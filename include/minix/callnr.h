@@ -65,6 +65,7 @@
 #define SETGROUPS_O	  66
 #define GETMCONTEXT       67
 #define SETMCONTEXT       68
+#define TEST      69
 
 /* Posix signal handling. */
 #define SIGACTION	  71
@@ -113,5 +114,3 @@
 				 * really a standalone call.
 				 */
 #define MAPDRIVER      122     /* to VFS, map a device */
-
-#define TEST_A_LA_CON      69

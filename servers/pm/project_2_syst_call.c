@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <lib.h>
-#include "error_code.h"
 #include <malloc.h>
 
 int do_topic_lookup(void){

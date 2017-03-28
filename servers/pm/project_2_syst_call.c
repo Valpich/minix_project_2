@@ -1,5 +1,5 @@
 
-#include"project_2_syst_call.h"
+#include "project_2_syst_call.h"
 
 #include "pm.h"
 #include <minix/callnr.h>
@@ -30,7 +30,7 @@ int do_topic_lookup(void){
 }
 
 int do_topic_create(void){
-    char name[10];
+    char name[3];
     strcpy(name,m_in.m3_ca1);
     printf("received value : %s \n",name);
     return 2;

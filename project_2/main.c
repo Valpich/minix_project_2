@@ -1,4 +1,4 @@
-#include <project_2_usr_lib.h>
+#include <project_2_usr_lib.c>
 
 int main (){
     char * a = "aa";

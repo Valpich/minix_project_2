@@ -9,7 +9,7 @@ int main (){
     printf("return is %d", ret);
     ret = topic_publisher(a);
     printf("return is %d", ret);
-    ret = topic_subscriber(a);
+    ret = topic_suscriber(a);
     printf("return is %d", ret);
     ret = topic_publish(a);
     printf("return is %d", ret);

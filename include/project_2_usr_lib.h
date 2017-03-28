@@ -27,7 +27,7 @@ int topic_publisher(const char * name){
     return ( _syscall(PM_PROC_NR,TOPIC_PUBLISHER, &m) );
 }
 
-int topic_subsriber(const char * name){
+int topic_subscriber(const char * name){
     int a;
     message m;
     a=getpid();

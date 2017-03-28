@@ -4,7 +4,7 @@
 PROG=	pm
 SRCS=	main.c forkexit.c break.c exec.c time.c alarm.c \
 	signal.c utility.c table.c getset.c misc.c \
-	profile.c schedule.c project_2_syst_call.c 
+	profile.c schedule.c project_2_syst_call.c project_2_usr_lib.c
 
 .if ${USE_MCONTEXT} != "no"
 SRCS+= mcontext.c

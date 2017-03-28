@@ -1,5 +1,4 @@
-#ifndef PROJECT_2_USR_LIB_H
-#define PROJECT_2_USR_LIB_H
+
 
 #include <sys/types.h>
 #include <lib.h>
@@ -54,4 +53,3 @@ int topic_retrieve(void){
     return ( _syscall(PM_PROC_NR,TOPIC_RETRIEVE, &m) );
 }
 
-#endif /* PROJECT_2_USR_LIB_H */

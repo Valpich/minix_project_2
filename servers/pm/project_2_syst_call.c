@@ -33,6 +33,28 @@ static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls acce
 static semaphore empty[MAX_TOPIC] = {[0 ... MAX_TOPIC-1] = MAX_MSG};	/* Count empty buffer slots */
 static semaphore full[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 0};		/* Count full buffer slots */
 
+typedef struct topic{
+    int id;
+    char * name;
+    char * messageContent[MAX_MSG];
+}Topic;
+
+
+typedef struct messageToRead{
+    int id;
+    struct Topic topic;
+    Subscriber subscriber;
+    bool read[MAX_MSG];
+}MessageToRead;
+
+typedef struct subscriber{
+    pid_t pid;
+}Subscriber;
+
+typedef struct topics{
+    struct MessageToRead messageToRead[];
+    char * listOfAllTopicNames[MAX_TOPIC];
+}Topics;
 
 void down(semaphore * s){
     printf("s in down is %d\n", *s);

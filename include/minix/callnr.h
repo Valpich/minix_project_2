@@ -66,7 +66,6 @@
 #define SETGROUPS_O	  66
 #define GETMCONTEXT       67
 #define SETMCONTEXT       68
-#define MYSYSCALL 69
 
 /* Posix signal handling. */
 #define SIGACTION	  71
@@ -115,3 +114,11 @@
 				 * really a standalone call.
 				 */
 #define MAPDRIVER      122     /* to VFS, map a device */
+
+// ADDITION FOR PROJECT 2 
+#define TOPIC_LOOKUP 35
+#define TOPIC_CREATE 44
+#define TOPIC_PUBLISHER 45
+#define TOPIC_SUBSCRIBER 49
+#define TOPIC_PUBLISH 56
+#define TOPIC_RETRIEVE 57

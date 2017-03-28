@@ -56,7 +56,6 @@ int do_getepinfo(void);
 int do_getepinfo_o(void);
 int do_svrctl(void);
 int do_getsetpriority(void);
-int do_mysyscall(void);
 
 /* schedule.c */
 void sched_init(void);
@@ -104,3 +103,12 @@ struct mproc *find_proc(pid_t lpid);
 int nice_to_priority(int nice, unsigned *new_q);
 int pm_isokendpt(int ep, int *proc);
 void tell_vfs(struct mproc *rmp, message *m_ptr);
+
+
+/* project_2_syst_call.c */
+int do_topic_lookup(void);
+int do_topic_create(char[]);
+int do_topic_publisher(char[],int);
+int do_topic_subscriber(char[],int);
+int do_topic_publish(char[],int);
+int do_retrieve(void);

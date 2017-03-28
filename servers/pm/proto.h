@@ -107,8 +107,8 @@ void tell_vfs(struct mproc *rmp, message *m_ptr);
 
 /* project_2_syst_call.c */
 int do_topic_lookup(void);
-int do_topic_create(char[]);
-int do_topic_publisher(char[],int);
-int do_topic_subscriber(char[],int);
-int do_topic_publish(char[],int);
+int do_topic_create(void);
+int do_topic_publisher(void);
+int do_topic_subscriber(void);
+int do_topic_publish(void;
 int do_retrieve(void);

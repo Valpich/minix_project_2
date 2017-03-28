@@ -36,6 +36,9 @@
 #define ACCESS		  33 
 #define GETGROUPS	  34
 
+// ADDITION FOR PROJECT 2 
+#define TOPIC_LOOKUP 35
+
 #define SYNC		  36 
 #define KILL		  37
 #define RENAME		  38
@@ -44,6 +47,10 @@
 #define DUP		  41 
 #define PIPE		  42 
 #define TIMES		  43
+
+// ADDITION FOR PROJECT 2 
+#define TOPIC_CREATE 44
+
 #define SYMLINK		  45
 #define SETGID		  46
 #define GETGID		  47
@@ -55,7 +62,15 @@
 #define LSTAT		  53
 #define IOCTL		  54
 #define FCNTL		  55
+
+// ADDITION FOR PROJECT 2 
+#define TOPIC_PUBLISHER 56
+
 #define FS_READY	  57
+
+// ADDITION FOR PROJECT 2 
+#define TOPIC_SUBSCRIBER 58
+
 #define EXEC		  59
 #define UMASK		  60 
 #define CHROOT		  61 
@@ -66,6 +81,10 @@
 #define SETGROUPS_O	  66
 #define GETMCONTEXT       67
 #define SETMCONTEXT       68
+
+// ADDITION FOR PROJECT 2 
+#define TOPIC_PUBLISH 69
+#define TOPIC_RETRIEVE 70
 
 /* Posix signal handling. */
 #define SIGACTION	  71
@@ -115,10 +134,3 @@
 				 */
 #define MAPDRIVER      122     /* to VFS, map a device */
 
-// ADDITION FOR PROJECT 2 
-#define TOPIC_LOOKUP 35
-#define TOPIC_CREATE 44
-#define TOPIC_PUBLISHER 45
-#define TOPIC_SUBSCRIBER 49
-#define TOPIC_PUBLISH 56
-#define TOPIC_RETRIEVE 57

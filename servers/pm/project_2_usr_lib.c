@@ -1,5 +1,9 @@
-
 #include"project_2_usr_lib.h"
+
+int topic_lookup(void){
+    message m;
+    return ( _syscall(PM_PROC_NR,TOPIC_LOOKUP, &m) );
+}
 
 int topic_create(const char * name){
     message m;
@@ -26,27 +30,19 @@ int topic_subsriber(const char * name){
     return ( _syscall(PM_PROC_NR,TOPIC_SUBSCRIBER, &m) );
 }
 
-int topic_publish(const char * name)
-{
+int topic_publish(const char * name){
     int a;
     message m;
     a=getpid();
     strcpy(m.m3_ca1,name);
     m.m1_i1=a;
-    return ( _syscall(PM_PROC_NR,TOPIC_PUBLISH_MSG, &m) );
+    return ( _syscall(PM_PROC_NR,TOPIC_PUBLISH, &m) );
 }
 
-int topic_lookup(void)
-{
-    message m;
-    return ( _syscall(PM_PROC_NR,TOPIC_DISPLAY_TOPIC, &m) );
-}
-
-int topic_retrieve(void)
-{
+int topic_retrieve(void){
     message m;
     m.m1_i1=getpid();
     //	printf("\nAbout to recieve message...!!");
     
-    return ( _syscall(PM_PROC_NR,TOPIC_RECEIVE_MSG, &m) );
+    return ( _syscall(PM_PROC_NR,TOPIC_RETRIEVE, &m) );
 }

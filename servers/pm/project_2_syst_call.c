@@ -5,7 +5,7 @@ int do_topic_lookup(void){
     return 1;
 }
 
-int do_topic_create(char[] topic)
+int do_topic_create(char[] topic){
     return 2;
 }
 

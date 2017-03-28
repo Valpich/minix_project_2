@@ -42,7 +42,7 @@ typedef struct Topic{
 }Topic;
 
 typedef struct Subscriber{
-    pid_t pid;
+    pid_t pid_subscriber;
 }Subscriber;
 
 typedef struct MessageToRead{

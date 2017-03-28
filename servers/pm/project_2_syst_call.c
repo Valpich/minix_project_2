@@ -41,6 +41,10 @@ typedef struct Topic{
     char * messageContent[MAX_MSG];
 }Topic;
 
+typedef struct Subscriber{
+    pid_t pid;
+}Subscriber;
+
 typedef struct MessageToRead{
     int id;
     struct Topic topic;
@@ -48,9 +52,6 @@ typedef struct MessageToRead{
     bool read[MAX_MSG];
 }MessageToRead;
 
-typedef struct Subscriber{
-    pid_t pid;
-}Subscriber;
 
 typedef struct Topics{
     struct MessageToRead messageToRead[];

@@ -54,7 +54,7 @@ typedef struct MessageToRead{
 
 
 typedef struct Topics{
-    struct MessageToRead messageToRead[];
+    struct MessageToRead * messageToRead;
     char * listOfAllTopicNames[MAX_TOPIC];
 }Topics;
 

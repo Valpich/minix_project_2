@@ -1,5 +1,29 @@
 
-#include"project_2_syst_call.h"
+#include "project_2_syst_call.h"
+
+#include "pm.h"
+#include <minix/callnr.h>
+#include <signal.h>
+#include <sys/svrctl.h>
+#include <sys/resource.h>
+#include <sys/utsname.h>
+#include <minix/com.h>
+#include <minix/config.h>
+#include <minix/sysinfo.h>
+#include <minix/type.h>
+#include <minix/vm.h>
+#include <string.h>
+#include <machine/archtypes.h>
+#include <lib.h>
+#include <assert.h>
+#include "mproc.h"
+#include "param.h"
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <string.h>
+#include <lib.h>
+#include <malloc.h>
 
 #define MAX_MSG 5	/* Number of message for each topic */
 #define MAX_TOPIC 10	/* Number of allowed topics for each topic */
@@ -47,6 +71,9 @@ int do_topic_lookup(void){
 }
 
 int do_topic_create(void){
+    char name[3];
+    strcpy(name,m_in.m3_ca1);
+    printf("received value : %s \n",name);
     return 2;
 }
 

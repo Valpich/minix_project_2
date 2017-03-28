@@ -105,7 +105,7 @@ int do_topic_lookup(void){
 
 int do_topic_create(void){
     printf("coucou\n");
-    char *name;
+    char *name = NULL;
     strcpy(name,m_in.m3_ca1);
     printf("received value : %s \n",name);
     return 2;

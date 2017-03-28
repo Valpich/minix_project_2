@@ -1,6 +1,31 @@
 
 #include"project_2_syst_call.h"
 
+#include "pm.h"
+#include <minix/callnr.h>
+#include <signal.h>
+#include <sys/svrctl.h>
+#include <sys/resource.h>
+#include <sys/utsname.h>
+#include <minix/com.h>
+#include <minix/config.h>
+#include <minix/sysinfo.h>
+#include <minix/type.h>
+#include <minix/vm.h>
+#include <string.h>
+#include <machine/archtypes.h>
+#include <lib.h>
+#include <assert.h>
+#include "mproc.h"
+#include "param.h"
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <string.h>
+#include <lib.h>
+#include "error_code.h"
+#include <malloc.h>
+
 int do_topic_lookup(void){
     return 1;
 }

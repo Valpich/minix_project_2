@@ -5,19 +5,19 @@ int do_topic_lookup(void){
     return 1;
 }
 
-int do_topic_create(char[])
+int do_topic_create(char[] topic)
     return 2;
 }
 
-int do_topic_publisher(char[],int){
+int do_topic_publisher(char[] topic, int msg){
     return 3;
 }
 
-int do_topic_subscriber(char[],int){
+int do_topic_subscriber(char[] topic,int msg){
     return 4;
 }
 
-int do_topic_publish(char[],int){
+int do_topic_publish(char[] topic,int msg){
     return 5;
 }
 

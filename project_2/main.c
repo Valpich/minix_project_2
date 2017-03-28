@@ -5,13 +5,13 @@ int main (){
     int ret = 0;
     ret = topic_lookup();
     printf("return is %d", ret);
-    ret = topic_create();
+    ret = topic_create(a);
     printf("return is %d", ret);
-    ret = topic_publisher();
+    ret = topic_publisher(a);
     printf("return is %d", ret);
-    ret = topic_subscriber();
+    ret = topic_subscriber(a);
     printf("return is %d", ret);
-    ret = topic_publish();
+    ret = topic_publish(a);
     printf("return is %d", ret);
     ret = topic_retrieve();
     printf("return is %d", ret);

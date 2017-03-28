@@ -1,3 +1,3 @@
 #!/bin/sh
-cc main.c /usr/src/include/project_2_usr_lib.c -o main
+cc main.c -o main
 ./main

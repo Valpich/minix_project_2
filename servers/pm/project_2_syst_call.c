@@ -6,8 +6,8 @@ int do_topic_lookup(void){
 }
 
 int do_topic_create(void){
-    char name_p[10];
-    strcpy(name_p,m_in.m3_ca1);
+    char name[10];
+    strcpy(name,m_in.m3_ca1);
     printf("received value : %s \n",name);
     return 2;
 }

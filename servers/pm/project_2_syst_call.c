@@ -28,6 +28,7 @@
 
 #define MAX_MSG 5	/* Number of message for each topic */
 #define MAX_TOPIC 10	/* Number of allowed topics for each topic */
+#define MAX_USR 30	/* Number of allowed user */
 typedef int semaphore;	/* Define semaphore as a type */
 static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls access to critical region */
 static semaphore empty[MAX_TOPIC] = {[0 ... MAX_TOPIC-1] = MAX_MSG};	/* Count empty buffer slots */
@@ -36,27 +37,30 @@ static semaphore full[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 0};		/* Count full bu
 typedef enum {false, true} bool;
 
 typedef struct Topic{
-    int id;
-    char * name;
-    char * messageContent[MAX_MSG];
+    int id; /* Topic id */
+    char * name;    /* Topic name */
+    char * messageContent; /* Message content of a Topic */
 }Topic;
 
 typedef struct Subscriber{
-    pid_t pid_subscriber;
+    pid_t pid_subscriber;   /* Subscribed pid_t */
 }Subscriber;
 
 typedef struct MessageToRead{
     int id;
-    struct Topic topic;
-    struct Subscriber subscriber;
-    bool read[MAX_MSG];
+    struct Topic topic; /* Topic object */
+    struct Subscriber subscriber;   /* Subscriber of the topic */
+    bool read; /* If the message was read */
 }MessageToRead;
 
 
 typedef struct Topics{
-    struct MessageToRead * messageToRead;
-    char * listOfAllTopicNames[MAX_TOPIC];
+    struct MessageToRead messageToRead[MAX_TOPIC*MAX_USR];    /* Array of message to read for users */
+    char * listOfAllTopicNames[MAX_TOPIC];  /* Array of all topic names */
+    int sizeOfMessageToReadForEachTopic[MAX_TOPIC];    /* Array of all the size of each topic to be read */
 }Topics;
+
+static Topics topics;
 
 void down(semaphore * s){
     printf("s in down is %d\n", *s);

@@ -36,7 +36,7 @@ static semaphore full[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 0};		/* Count full bu
 
 void down(semaphore * s){
     printf("s in down is %d\n", *s);
-    while(*s == 0)wait();
+    while(*s == 0)sleep(1);
     *s = *s - 1;
 }
 

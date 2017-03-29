@@ -34,33 +34,23 @@ static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls acce
 static semaphore empty[MAX_TOPIC] = {[0 ... MAX_TOPIC-1] = MAX_MSG};	/* Count empty buffer slots */
 static semaphore full[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 0};		/* Count full buffer slots */
 
-typedef enum {false, true} bool;
-
-typedef struct Topic{
+typedef struct UserTopic{
     int id; /* Topic id */
     char * name;    /* Topic name */
-    char * messageContent; /* Message content of a Topic */
-}Topic;
+    char * messageContent[MAX_MSG]; /* Message content of a Topic */
+    bool read[MAX_MSG]; /* If the message was read */
+}UserTopic;
 
 typedef struct Subscriber{
-    pid_t pid_subscriber;   /* Subscribed pid_t */
+    pid_t pid_subscriber;   /* Subscriber pid_t */
+    struct UserTopic topic[MAX_TOPIC];   /* Topics subscribed */
 }Subscriber;
 
-typedef struct MessageToRead{
-    int id;
-    struct Topic topic; /* Topic object */
-    struct Subscriber subscriber;   /* Subscriber of the topic */
-    bool read; /* If the message was read */
-}MessageToRead;
-
-
-typedef struct Topics{
-    struct MessageToRead messageToRead[MAX_TOPIC*MAX_USR];    /* Array of message to read for users */
-    char * listOfAllTopicNames[MAX_TOPIC];  /* Array of all topic names */
-    int sizeOfMessageToReadForEachTopic[MAX_TOPIC];    /* Array of all the size of each topic to be read */
-}Topics;
-
-static Topics topics;
+static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
+static struct Subscriber subscribers[MAX_USR];
+static int  topicsSize = 0;
+static int  subscriberSize = 0;
+static char * topicNames[MAX_TOPIC];
 
 void down(semaphore * s){
     printf("s in down is %d\n", *s);
@@ -110,7 +100,7 @@ int do_topic_lookup(void){
 int do_topic_create(void){
     printf("coucou\n");
     char *name = NULL;
-    strcpy(name,m_in.m3_ca1);
+    // strcpy(name,m_in.m3_ca1);
     printf("received value : %s \n",name);
     return 2;
 }
@@ -129,4 +119,30 @@ int do_topic_publish(void){
 
 int do_retrieve(void){
     return 6;
+}
+
+bool create_new_topic(const char * name){
+    printf("Topic creation \n");
+    if(topicsSize < MAX_TOPIC){
+        printf("Setting name \n");
+        strcpy(&topicNames[topicsSize++],name);
+        printf("Topic name is %s\n",&topicNames[topicsSize -1]);
+        printf("Topic size is %d\n",topicsSize);
+        printf("Topic created \n");
+        return true;
+    }else{
+        printf("Topic size is %d, max amount reached\n",topicsSize);
+        printf("Topic %s not created \n", name);
+        return false;
+    }
+}
+
+void create_new_user_topic(const int id, const char * name){
+    printf("UserTopic creation \n");
+    UserTopic userTopic;
+    printf("Setting id \n");
+    userTopic.id = id;
+    printf("Setting user topic name \n");
+    strcpy(&userTopic.name,name);
+    printf("UserTopic created \n");
 }

@@ -133,9 +133,12 @@ int do_topic_lookup(void){
     return 1;
 }
 
-int do_topic_create(void){
+int do_topic_create(const char * name){
     printf("coucou\n");
-    char *name = NULL;
+
+    create_new_topic(name);
+
+    //char *name = NULL;
     // strcpy(name,m_in.m3_ca1);
     printf("received value : %s \n",name);
     return 2;

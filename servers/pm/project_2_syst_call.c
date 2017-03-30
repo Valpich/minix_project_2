@@ -125,10 +125,6 @@ void unpublish_lock(int topic_id){
 }
 
 int do_topic_lookup(void){
-       int i = 0;
-    for(i=0 ; i< MAX_TOPIC ; i++){
-        printf("Topic %d is : %s \n",i, &topicNames[i] );
-    }
     return 1;
 }
 
@@ -156,17 +152,32 @@ int do_retrieve(void){
     return 6;
 }
 
+
 /**
  * @Precondition Is into a critical region
  */
-bool create_new_topic(const char * name){
+bool create_topic(const char * name){
     printf("Topic creation \n");
     if(topicsSize < MAX_TOPIC){
-        printf("Setting name \n");
-        strcpy(&topicNames[topicsSize++],name);
-        printf("Topic name is %s\n",&topicNames[topicsSize -1]);
-        printf("Topic size is %d\n",topicsSize);
-        printf("Topic created \n");
+        int i = 0;
+        for(i=0; i< MAX_TOPIC; i++) {
+            if(strcmp("\0",&topicNames[i]) == 0){
+                printf("Empty find at %d\n", i);
+                printf("Entering create topic lock with empty %d", empty[i]);
+                down(&empty[i]);
+                enter_critical_region_topic(i);
+                printf("Setting name \n");
+                strcpy(&topicNames[i],name);
+                printf("Topic name is %s\n",&topicNames[i]);
+                topicsSize++;
+                printf("Topic size is %d\n",topicsSize);
+                printf("Topic created \n");
+                leave_critical_region_topic(i);
+                up(&full[i]);
+                printf("Leaving publish lock with full %d", full[i]);
+                return true;
+            }
+        }
         return true;
     }else{
         printf("Topic size is %d, max amount reached\n",topicsSize);
@@ -178,35 +189,62 @@ bool create_new_topic(const char * name){
 /**
  * @Precondition Is into a critical region
  */
+bool delete_topic(const char * name){
+    printf("Topic deletion \n");
+    int i = 0;
+    for(i=0; i< MAX_TOPIC; i++) {
+        if(strcmp(name,&topicNames[i]) == 0){
+            printf("Topic find at %d\n", i);
+            printf("Entering publish lock with full %d", full[i]);
+            down(&full[i]);
+            enter_critical_region_topic(i);
+            strcpy(&topicNames[i], "\0");
+            topicsSize--;
+            printf("Topic deleted \n");
+            leave_critical_region_topic(i);
+            up(&empty[i]);
+            printf("Leaving publish lock with empty %d", empty[i]);
+            
+            return true;
+        }
+    }
+    printf("Topic size is %d, max amount reached\n",topicsSize);
+    printf("Unable to delete topic %s n\n", name);
+    return false;
+}
+
+/**
+ * @Precondition Is into a critical region
+ */
 void create_new_user_topic(const int id, const char * name){
-    printf("UserTopic creation \n");
+    printf("UserTopic creation\n");
     UserTopic userTopic;
-    printf("Setting userTopicToString method \n");
+    printf("Setting userTopicToString method\n");
     userTopic.toString = toStringUserTopic;
     printf("Setting id \n");
     userTopic.id = id;
     printf("Setting user topic name \n");
     strcpy(&userTopic.name,name);
-    printf("Setting messages to \0 in user topic \n");
+    printf("Setting messages to \0 in user topic\n");
     int i = 0;
     for(i = 0; i<MAX_MSG ;i++){
         strcpy(&userTopic.messageContent[i],"\0");
     }
-    printf("Setting messages read to true in user topic \n");
+    printf("Setting messages read to true in user topic\n");
     for(i = 0; i<MAX_MSG ;i++){
         userTopic.read[i] = true;
     }
-    printf("Printing user topic \n");
+    printf("Printing user topic\n");
     userTopic.toString(&userTopic);
-    printf("UserTopic created \n");
+    printf("UserTopic created\n");
 }
 
 /**
  * @Precondition Is into a critical region
  */
 void publish_into_user_topic(const UserTopic * userTopic, const char * msg, const int msgLocation){
-    printf("Publishing into a user topic \n");
+    printf("Publishing into a user topic\n");
     strcpy(userTopic->messageContent[msgLocation],msg);
     //    userTopic->read[msgLocation] = false;
-    printf("UserTopic created \n");
+    printf("UserTopic created\n");
 }

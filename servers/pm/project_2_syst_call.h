@@ -16,7 +16,9 @@ int do_topic_publish(void);
 
 int do_retrieve(void);
 
-bool create_new_topic(const char * name);
+bool create_topic(const char * name);
+
+bool delete_topic(const char * name);
 
 void create_new_user_topic(const int id, const char * name);
 

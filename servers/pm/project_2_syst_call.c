@@ -5,13 +5,11 @@ const UserTopic defaultUserTopic = {.id = -1,.messageContent = {[0 ... MAX_MSG-1
 const Topic defaultTopic = {.id=-1,.msgSlotAvailable = {[0 ... MAX_MSG-1] = true}, .name = "\0", .toString=toStringTopic};
 
 static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls access to critical region */
-static semaphore empty[MAX_TOPIC] = {[0 ... MAX_TOPIC-1] = MAX_MSG};	/* Count empty buffer slots */
-static semaphore full[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 0};		/* Count full buffer slots */
 
 static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
 
 static Subscriber subscribers[MAX_USR];
-static Publisher publisher[MAX_USR];
+static Publisher publishers[MAX_USR];
 static int  topicsSize = 0;
 static int  subscriberSize = 0;
 
@@ -51,11 +49,11 @@ void toStringSubscriber(const Subscriber * subscriber){
 
 void toStringPublisher(const Publisher * publisher){
     if(publisher != NULL){
-        printf("Publisher is:\npid: %d, ", publisher->pid_publisher);
+        printf("Publisher is:\npid: %d,", publisher->pid_publisher);
         int i = 0;
         printf(" topics subscribed names: ");
         for(i = 0; i<MAX_TOPIC ;i++){
-            printf("%s, ", &publisher->topicNames[i]);
+            printf("%s, ", publisher->topicNames[i]);
         }
         printf(".\n");
     }else{
@@ -258,7 +256,15 @@ int doInit(){
     for(i = 0; i<MAX_USR; i++){
         subscribers[i].pid_subscriber = -1;
         subscribers->topic[i] = defaultUserTopic;
-        subscribers->toString = toStringSubscriber;
+        subscribers[i].toString = toStringSubscriber;
+    }
+    for(i = 0; i<MAX_USR; i++){
+        publishers[i].pid_publisher= -1;
+        int j = 0;
+        for(j = 0; j<MAX_TOPIC; j++){
+            publishers[i].topicNames[j] = defaultUserTopic.name;
+        }
+        publishers[i].toString = toStringPublisher;
     }
     for(i = 0; i<MAX_TOPIC; i++){
         topics.topicArray[i] = defaultTopic;
@@ -278,9 +284,8 @@ Topic * findTopicByName(const char * name){
 /**
  * @Precondition Is into a critical region
  */
-int publish_into_all_user_topic(const char * topicName, const char * msg, const int msgLocation){
-    printf("Publishing into all user topic\n");
-    doInit();//TODO: Init at beginning
+int publish_into_all_user_topic(const char * topicName, const char * msg){
+    printf("Publishing into all user topic.\n");
     subscribers->toString(subscribers);
     int i = 0;
     Topic  * topic = findTopicByName(topicName);
@@ -299,6 +304,7 @@ int publish_into_all_user_topic(const char * topicName, const char * msg, const 
             }
         }
     }
+    printf("End of publish into all user topic.\n");
     return slot;
 }
 
@@ -311,4 +317,36 @@ int findAndLockAvailableSlot(Topic * topic){
         }
     }
     return -1;
+}
+
+int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher){
+    printf("Start publishing message into a topic.\n");
+    doInit();//TODO: Init at beginning
+    puts("1");
+    if(userIsRegistredAsPublisher(topicName, publisher)){
+        Topic * topic = findTopicByName(topicName);
+        enter_critical_region_topic(topic->id);
+        publish_into_all_user_topic(topic->name,msg);
+        leave_critical_region_topic(topic->id);
+        printf("End of publishing message into a topic.\n");
+        return MSG_PUBLISHED;
+    }else{
+        puts("2");
+        printf("End of publishing message into a topic with failure.\n");
+        return USR_NOT_REGISTRED_AS_PUBLISHER;
+    }
+}
+
+bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher){
+    int i = 0;
+    int j = 0;
+    for(i = 0; i<MAX_USR; i++){
+        for(j = 0; j<MAX_TOPIC; j++){
+            publisher->toString(publisher);
+            if(strcmp(publisher[i].topicNames[j],topicName) == 0){
+                return true;
+            }
+        }
+    }
+    return false;
 }

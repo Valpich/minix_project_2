@@ -407,3 +407,62 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
     puts("User not registred as published");
     return false;
 }
+
+
+
+int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic){
+    int i = 0;
+    for(i =0;i<MAX_TOPIC; i++){
+        if(strcmp(subscriber->topic[i].name, topic->name)){
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool checkAllRetrieved(const Topic * topic){
+    int i = 0;
+    int j = 0;
+    for(i=0;i<MAX_USR;i++){
+        for(j=0;j<MAX_MSG;j++){
+            if(subscribers[i].topic[topic->id].read[j] == true){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+char * readMessage(UserTopic *userTopic){
+    int i = 0;
+    for(i = 0; i<MAX_MSG ; i++){
+        if(userTopic->read[i] == false){
+            userTopic->read[i] = true;
+            char * msg = malloc(sizeof(userTopic->messageContent));
+            strcpy(msg,userTopic->messageContent);
+            free(userTopic->messageContent);
+            char * erased = malloc(sizeof("\0"));
+            strcpy(erased,"\0");
+            userTopic->messageContent[i]= erased;
+            return msg;
+        }
+    }
+}
+
+char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicName){
+    Topic * topic = findTopicByName(topicName);
+    if(topic != NULL){
+        wait_read_critical_region_topic(topic);
+        int positionOfTheTopic = findUserTopicPosition(subscriber, topic);
+        UserTopic userTopic = subscriber->topic[positionOfTheTopic];
+        char * msg = readMessage(&userTopic);
+        if(checkAllRetrieved(topic)){
+            int i = 0;
+            for(i = 0;i<MAX_MSG;i++){
+                topic->msgSlotAvailable[i] = true;
+            }
+        }
+        return msg;
+    }else{
+        return NULL;
+    }

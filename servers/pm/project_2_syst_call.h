@@ -110,4 +110,10 @@ int publish_msg_into_topic(const char * topicName, const char * msg, const Publi
 
 bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher);
 
+int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);
+
+bool checkAllRetrieved(const Topic * topic);
+
+char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicName);
+
 #endif /** PROJECT_2_SYST_CALL_H */

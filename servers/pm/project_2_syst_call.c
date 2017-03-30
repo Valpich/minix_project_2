@@ -197,28 +197,23 @@ bool create_topic(const char * name){
                 printf("Topic %s is already in list\n", name);
                 return false;
             }else if(strcmp("\0",topics.topicNames[i]) == 0){
-                    printf("Empty find at %d\n", i);
-                    printf("Entering create topic lock with empty %d.\n", empty[i]);
-                    down(&empty[i]);
-                    enter_critical_region_topic(i);
-                    printf("Setting name\n");
-                    char *a = malloc(sizeof(name));
-                    strcpy(a,name);
-                    topics.topicNames[i] = a;
-                    printf("Topic name is %s\n",topics.topicNames[i]);
-                    topicsSize++;
-                    printf("Topic size is %d\n",topicsSize);
-                    printf("Topic created \n");
-                    leave_critical_region_topic(i);
-                    up(&full[i]);
-                    printf("Leaving create topic lock with full %d.\n", full[i]);
-                    return true;
-                }
+                printf("Empty find at %d\n", i);
+                printf("Entering create topic lock with empty %d.\n", empty[i]);
+                down(&empty[i]);
+                enter_critical_region_topic(i);
+                printf("Setting name\n");
+                char *a = malloc(sizeof(name));
+                strcpy(a,name);
+                topics.topicNames[i] = a;
+                printf("Topic name is %s\n",topics.topicNames[i]);
+                topicsSize++;
+                printf("Topic size is %d\n",topicsSize);
+                printf("Topic created \n");
+                leave_critical_region_topic(i);
+                up(&full[i]);
+                printf("Leaving create topic lock with full %d.\n", full[i]);
+                return true;
             }
-          }else{
-            printf("Topic %s is already in list\n", name);
-            return false;
-          }
         }
         return true;
     }else{

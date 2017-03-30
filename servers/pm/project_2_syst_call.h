@@ -90,8 +90,8 @@ int is_ID_set(const char * name, pid_t id);
 
 int subscribers_init(const char * name, pid_t id);
 
-bool subscribe_to_topic(const char * name, pid_t id){
-    
+bool subscribe_to_topic(const char * name, pid_t id);
+
 bool create_topic(const char * name);
 
 bool delete_topic(const char * name);

@@ -62,11 +62,23 @@ void toStringPublisher(const Publisher * publisher){
     }
 }
 
+void toStringTopic(const Topic * topic){
+    if(topic != NULL){
+        printf("Topic: name is %s, available slot are: ",  topic->name);
+        int i =0 ;
+        for(i = 0; i<MAX_TOPIC ;i++){
+            printf(" %d,",  topic->msgSlotAvailable[i]);
+        }
+    }else{
+        printf(" Topics is NULL.\n");
+    }
+}
+
 void toStringTopics(const Topics * topic){
     if(topic != NULL){
         int i =0 ;
         for(i = 0; i<MAX_TOPIC ;i++){
-            printf("Topic %d : name is %s, can be removed is %d.\n", i, topic->topicNames[i], topic->canBeRemoved[i]);
+            printf("Topic %d : name is %s, can be removed is %d.\n", i, topic->topicArray[i].name, topic->canBeRemoved[i]);
         }
     }else{
         printf(" Topics is NULL.\n");
@@ -103,8 +115,8 @@ void leave_critical_region_topic(int topic_id){
 int do_topic_lookup(void){
     int i = 0;
     for(i= 0; i< MAX_TOPIC;i++){
-        if(strcmp("\0",topics.topicNames[i]) != 0){
-            printf("Topic #%d : %s\n",i,topics.topicNames[i]);
+        if(strcmp("\0",topics.topicArray[i].name) != 0){
+            printf("Topic #%d : %s\n",i,topics.topicArray[i].name);
         }
     }
     return 1;
@@ -146,17 +158,17 @@ bool create_topic(const char * name){
     if(topicsSize < MAX_TOPIC){
         int i = 0;
         for(i=0; i< MAX_TOPIC; i++) {
-            if(strcmp(name, topics.topicNames[i]) == 0) {
+            if(strcmp(name, topics.topicArray[i].name) == 0) {
                 printf("Topic %s is already in list.\n", name);
                 return false;
-            }else if(strcmp("\0",topics.topicNames[i]) == 0){
+            }else if(strcmp("\0",topics.topicArray[i].name) == 0){
                 printf("Empty find at %d\n", i);
                 enter_critical_region_topic(i);
                 printf("Setting name.\n");
                 char *a = malloc(sizeof(name));
                 strcpy(a,name);
-                topics.topicNames[i] = a;
-                printf("Topic name is %s.\n",topics.topicNames[i]);
+                topics.topicArray[i].name = a;
+                printf("Topic name is %s.\n",topics.topicArray[i].name);
                 topicsSize++;
                 printf("Topic size is %d.\n",topicsSize);
                 printf("Topic created.\n");
@@ -179,14 +191,14 @@ bool delete_topic(const char * name){
     printf("Topic deletion \n");
     int i = 0;
     for(i=0; i< MAX_TOPIC; i++) {
-        if(strcmp(name,topics.topicNames[i]) == 0){
+        if(strcmp(name,topics.topicArray[i].name) == 0){
             printf("Topic find at %d.\n", i);
             enter_critical_region_topic(i);
-            char * toDelete = topics.topicNames[i];
+            char * toDelete = topics.topicArray[i].name;
             free(toDelete);
             char *a = malloc(sizeof("\0"));
             strcpy(a,"\0");
-            topics.topicNames[i] = a;
+            topics.topicArray[i].name = a;
             topicsSize--;
             printf("Topic deleted.\n");
             leave_critical_region_topic(i);
@@ -254,8 +266,19 @@ void publish_into_all_user_topic(const char * topicName, const char * msg, const
     doInit();//TODO: Init at beginning
     subscribers->toString(subscribers);
     int i = 0;
+    int topicId = -2;
+    for(i=0;i<MAX_TOPIC;i++) {
+        if (strcmp(topics.topicArray[i].name, topicName) == 0) {
+            topicId = topicId = i;
+        }
+    }
     for(i=0;i<MAX_USR;i++){
-        subscribers->toString(subscribers);
+        int j = 0;
+        for(j=0;j<MAX_TOPIC;j++){
+            if(subscribers[i].topic[j].id == topicId) {
+                publish_into_user_topic(&subscribers[i].topic[j], msg, 1);
+            }
+        }
     }
     
 }

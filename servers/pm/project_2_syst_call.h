@@ -47,8 +47,14 @@ typedef struct Publisher{
     void (*toString)(const struct Publisher *);    /* Pointer to the display function of a Publisher */
 }Publisher;
 
+typedef struct Topic{
+    char * name;    /* List of all topics */
+    bool msgSlotAvailable[MAX_MSG];    /* If a message can be removed */
+    void (*toString)(const struct Topic *);  /* Pointer to the display function of a Topic */
+}Topic;
+
 typedef struct Topics{
-    char * topicNames[MAX_TOPIC];    /* List of all topics */
+    Topic topicArray[MAX_TOPIC];    /* List of all topics */
     bool canBeRemoved[MAX_TOPIC];    /* If a topic can be removed */
     void (*toString)(const struct Topics *);  /* Pointer to the display function of a Topics */
 }Topics;

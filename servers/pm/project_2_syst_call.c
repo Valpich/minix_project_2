@@ -262,7 +262,9 @@ int doInit(){
         publishers[i].pid_publisher= -1;
         int j = 0;
         for(j = 0; j<MAX_TOPIC; j++){
-            publishers[i].topicNames[j] = defaultUserTopic.name;
+            char * name = malloc(sizeof("\0"));
+            strcpy(name,"\0");
+            publishers[i].topicNames[j] = name;
         }
         publishers[i].toString = toStringPublisher;
     }
@@ -322,8 +324,8 @@ int findAndLockAvailableSlot(Topic * topic){
 int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher){
     printf("Start publishing message into a topic.\n");
     doInit();//TODO: Init at beginning
-    puts("1");
     if(userIsRegistredAsPublisher(topicName, publisher)){
+        puts("1");
         Topic * topic = findTopicByName(topicName);
         enter_critical_region_topic(topic->id);
         publish_into_all_user_topic(topic->name,msg);
@@ -341,12 +343,15 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
     int i = 0;
     int j = 0;
     for(i = 0; i<MAX_USR; i++){
-        for(j = 0; j<MAX_TOPIC; j++){
-            publisher->toString(publisher);
-            if(strcmp(publisher[i].topicNames[j],topicName) == 0){
-                return true;
+        if(publishers[i].pid_publisher == publisher->pid_publisher){
+            for(j = 0; j<MAX_TOPIC; j++) {
+                if (strcmp(publishers[i].topicNames[j], topicName) == 0) {
+                    puts("User registred as published");
+                    return true;
+                }
             }
         }
     }
+    puts("User not registred as published");
     return false;
 }

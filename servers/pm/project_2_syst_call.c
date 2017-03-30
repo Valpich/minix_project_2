@@ -37,8 +37,14 @@ typedef struct UserTopic{
 typedef struct Subscriber{
     pid_t pid_subscriber;   /* Subscriber pid_t */
     struct UserTopic topic[MAX_TOPIC];   /* Topics subscribed */
-    void (*toString)(const struct Subscriber *); /* Pointer to the display function of a Subscriber */
+    void (*toString)(const struct Subscriber *);    /* Pointer to the display function of a Subscriber */
 }Subscriber;
+
+typedef struct Publisher{
+    pid_t pid_publisher;   /* Publisher pid_t */
+    char * topicNames[MAX_TOPIC];   /* Topics declared as published */
+    void (*toString)(const struct Publisher *);    /* Pointer to the display function of a Publisher */
+}Publisher;
 
 static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
 static struct Subscriber subscribers[MAX_USR];
@@ -81,6 +87,20 @@ void toStringSubscriber(const Subscriber * subscriber){
     }
 }
 
+void toStringPublisher(const Publisher * publisher){
+    if(publisher != NULL){
+        printf("Publisher is:\npid: %d, ", publisher->pid_publisher);
+        int i = 0;
+        printf(" topics subscribed names: ");
+        for(i = 0; i<MAX_TOPIC ;i++){
+            printf("%s, ", &publisher->topicNames[i]);
+        }
+        printf(".\n");
+    }else{
+        printf("Publisher is NULL.\n");
+    }
+}
+
 /********* END OF TO STRING FUNCTIONS **********/
 
 void down(semaphore * s){
@@ -94,34 +114,14 @@ void up(semaphore * s){
     *s = *s + 1;
 }
 
-void enter_critical_region(int topic_id){
+void enter_critical_region_topic(int topic_id){
     printf("Entering critical region");
     down(&mutex[topic_id]);
 }
 
-void leave_critical_region(int topic_id){
+void leave_critical_region_topic(int topic_id){
     printf("Leaving critical region");
     up(&mutex[topic_id]);
-}
-
-void publish_lock(int topic_id){
-    printf("Entering publish lock with empty %d", empty[topic_id]);
-    down(&empty[topic_id]);
-    enter_critical_region(topic_id);
-    // TODO: Add the published topic
-    leave_critical_region(topic_id);
-    up(&full[topic_id]);
-    printf("Leaving publish lock with full %d", full[topic_id]);
-}
-
-void unpublish_lock(int topic_id){
-    printf("Entering publish lock with full %d", full[topic_id]);
-    down(&full[topic_id]);
-    enter_critical_region(topic_id);
-    // TODO: Remove the published topic
-    leave_critical_region(topic_id);
-    up(&empty[topic_id]);
-    printf("Leaving publish lock with empty %d", empty[topic_id]);
 }
 
 int do_topic_lookup(void){
@@ -152,7 +152,6 @@ int do_retrieve(void){
     return 6;
 }
 
-
 /**
  * @Precondition Is into a critical region
  */
@@ -174,7 +173,7 @@ bool create_topic(const char * name){
                 printf("Topic created \n");
                 leave_critical_region_topic(i);
                 up(&full[i]);
-                printf("Leaving create topic lock with full %d", full[i]);
+                printf("Leaving publish lock with full %d", full[i]);
                 return true;
             }
         }
@@ -195,7 +194,7 @@ bool delete_topic(const char * name){
     for(i=0; i< MAX_TOPIC; i++) {
         if(strcmp(name,&topicNames[i]) == 0){
             printf("Topic find at %d\n", i);
-            printf("Entering delete topic lock with full %d", full[i]);
+            printf("Entering publish lock with full %d", full[i]);
             down(&full[i]);
             enter_critical_region_topic(i);
             strcpy(&topicNames[i], "\0");
@@ -203,7 +202,8 @@ bool delete_topic(const char * name){
             printf("Topic deleted \n");
             leave_critical_region_topic(i);
             up(&empty[i]);
-            printf("Leaving topic delete lock with empty %d", empty[i]);
+            printf("Leaving publish lock with empty %d", empty[i]);
+            
             return true;
         }
     }

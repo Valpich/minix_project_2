@@ -111,10 +111,8 @@ void toStringTopics(const Topics * topic){
     if(topic != NULL){
         int i =0 ;
         for(i = 0; i<MAX_TOPIC ;i++){
-            printf("%s, ", &topic->topicNames[i]);
-        }
-        for(i = 0; i<MAX_TOPIC ; i++){
-            printf("%d, ", &topic->canBeRemoved[i]);
+            printf("Topic %d : %s, ", i, &topic->topicNames[i]);
+            printf("Topic %d : %d, ", i, &topic->canBeRemoved[i]);
         }
         printf(".\n");
     }else{

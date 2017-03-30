@@ -49,6 +49,7 @@ typedef struct Publisher{
 typedef struct Topics{
     char * topicNames[MAX_TOPIC];    /* List of all topics */
     bool canBeRemoved[MAX_TOPIC];    /* If a topic can be removed */
+    void (*toString)(const struct Topics *);  /* Pointer to the display function of a Topics */
 }Topics;
 
 static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
@@ -103,6 +104,21 @@ void toStringPublisher(const Publisher * publisher){
         printf(".\n");
     }else{
         printf("Publisher is NULL.\n");
+    }
+}
+
+void toStringTopics(const Topics * topic){
+    if(topic != NULL){
+        int i =0 ;
+        for(i = 0; i<MAX_TOPIC ;i++){
+            printf("%s, ", &topic->topicNames[i]);
+        }
+        for(i = 0; i<MAX_TOPIC ; i++){
+            printf("%d, ", &topic->canBeRemoved[i]);
+        }
+        printf(".\n");
+    }else{
+        printf(" Topics  is NULL.\n");
     }
 }
 

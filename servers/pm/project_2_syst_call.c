@@ -144,7 +144,7 @@ int do_retrieve(void){
 }
 
 /**
-* Not critical
+* Not critical 
 */
 // PUBLISHER TO TEST
 

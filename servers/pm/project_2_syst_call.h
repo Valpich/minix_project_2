@@ -90,6 +90,8 @@ void create_new_user_topic(const int id, const char * name);
 
 bool delete_topic(const char * name);
 
+Topic * findTopicByName(const char * name);
+
 void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation);
 
 int publish_into_all_user_topic(const char * topicName, const char * msg, const int msgLocation);

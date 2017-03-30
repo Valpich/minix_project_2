@@ -248,6 +248,10 @@ void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int 
     printf("UserTopic created\n");
 }
 
+int doFakeInit(){
+    create_topic("Salut");
+    create_topic("aude");
+}
 
 int doInit(){
     int i = 0;
@@ -261,6 +265,16 @@ int doInit(){
     }
 }
 
+Topic * findTopicByName(const char * name){
+    int i = 0;
+    for(i=0;i<MAX_TOPIC;i++) {
+        if (strcmp(topics.topicArray[i].name, name) == 0) {
+            return &topics.topicArray[i];
+        }
+    }
+    return NULL;
+}
+
 /**
  * @Precondition Is into a critical region
  */
@@ -269,12 +283,7 @@ int publish_into_all_user_topic(const char * topicName, const char * msg, const 
     doInit();//TODO: Init at beginning
     subscribers->toString(subscribers);
     int i = 0;
-    Topic  * topic = NULL;
-    for(i=0;i<MAX_TOPIC;i++) {
-        if (strcmp(topics.topicArray[i].name, topicName) == 0) {
-            topic = &topics.topicArray[i];
-        }
-    }
+    Topic  * topic = findTopicByName(topicName);
     if(topic == NULL){
         return TOPIC_NOT_FOUND;
     }

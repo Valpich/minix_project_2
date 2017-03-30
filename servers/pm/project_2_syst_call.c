@@ -54,7 +54,8 @@ typedef struct Topics{
 }Topics;
 
 static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
-static struct Subscriber subscribers[MAX_USR];
+static Subscriber subscribers[MAX_USR];
+static Publisher publisher[MAX_USR];
 static int  topicsSize = 0;
 static int  subscriberSize = 0;
 

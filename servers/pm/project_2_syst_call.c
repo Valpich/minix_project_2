@@ -106,6 +106,17 @@ void leave_critical_region_topic(int topic_id){
     up(&mutex[topic_id]);
 }
 
+void checkNotDown(semaphore * s){
+    while(*s == 0){
+        printf("Waiting critical region to be free.\n");
+        sleep(1);
+    }
+}
+
+void wait_read_critical_region_topic(int topic_id){
+    checkNotDown(&mutex[topic_id]);
+}
+
 int do_topic_lookup(void){
     int i = 0;
     for(i= 0; i< MAX_TOPIC;i++){
@@ -144,79 +155,79 @@ int do_retrieve(void){
 }
 
 /**
-* Not critical 
-*/
+ * Not critical
+ */
 // PUBLISHER TO TEST
 
 int is_ID_set(const char * name, pid_t id){
-
-int i = 0;
-
-for(i=0 ; i<MAX_USR ; i++){
+    
+    int i = 0;
+    
+    for(i=0 ; i<MAX_USR ; i++){
         // find ID
         if( id == subscribers[i].pid_subscriber){
             // look through its UserTopic to find the name
             int j = 0;
             for(j=0;j<MAX_TOPIC; j++){
-                 if(strcmp(name, subscribers[i].topic[j].name) == 0){
+                if(strcmp(name, subscribers[i].topic[j].name) == 0){
                     printf("already subscribed to this topic\n");
                     // return 5 -> already subscribed
                     return 5;
-                 }
-             }
-             // means was not found the first time -> first empty
-             for(j=0;j<MAX_TOPIC; j++){
-                 if(-1 == subscribers[i].topic[j].id){
+                }
+            }
+            // means was not found the first time -> first empty
+            for(j=0;j<MAX_TOPIC; j++){
+                if(-1 == subscribers[i].topic[j].id){
                     char *a = malloc(sizeof(name));
                     strcpy(a,"\0");
                     subscribers[i].topic[j].name = a;
                     subscribers[i].topic[j].id = j;
-                    // return 1 -> ok 
+                    // return 1 -> ok
                     return 1;
-                 }    
-            }          
+                }
+            }
         }
     }
-// mean could not find ID
-return 0;
+    // mean could not find ID
+    return 0;
 }
 
 // used if the id was not found in the subscribers list -> not subscribed yet to any topic
 int subscribers_init(const char * name, pid_t id){
-int i = 0;
-// means the id was not found  in the subscribers -> first  init
-for(i=0 ; i<MAX_USR ; i++){
+    int i = 0;
+    // means the id was not found  in the subscribers -> first  init
+    for(i=0 ; i<MAX_USR ; i++){
         // Look for the first available size
         if(-1 == subscribers[i].pid_subscriber){
             // assign correct value to pid
             subscribers[i].pid_subscriber =  id;
             // look through its UserTopic to find the name
             int j = 0;
-                     // means was not found the first time -> first empty
-             for(j=0;j<MAX_TOPIC; j++){
-                 if(-1 == subscribers[j].topic[j].id){
+            // means was not found the first time -> first empty
+            for(j=0;j<MAX_TOPIC; j++){
+                if(-1 == subscribers[j].topic[j].id){
                     char *a = malloc(sizeof(name));
                     strcpy(a,"\0");
                     subscribers[i].topic[j].name = a;
                     subscribers[i].topic[j].id = j;
                     // 1-> ok
                     return 1;
-                 }    
-            } 
+                }
+            }
+        }
     }
-}
-// could not find -1
-return 0;   
+    // could not find -1
+    return 0;
 }
 bool subscribe_to_topic(const char * name, pid_t id){
-
+    
     int retourValue = is_ID_set(name,id);
     if(retourValue != 0)
         return true;
     retourValue  = subscribers_init(name,id);
     if(retourValue != 0)
         return true;
- 
+    
     return false;
 }
 
@@ -449,20 +460,21 @@ char * readMessage(UserTopic *userTopic){
     }
 }
 
-char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicName){
-    Topic * topic = findTopicByName(topicName);
-    if(topic != NULL){
+char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicName) {
+    Topic *topic = findTopicByName(topicName);
+    if (topic != NULL) {
         wait_read_critical_region_topic(topic);
         int positionOfTheTopic = findUserTopicPosition(subscriber, topic);
         UserTopic userTopic = subscriber->topic[positionOfTheTopic];
-        char * msg = readMessage(&userTopic);
-        if(checkAllRetrieved(topic)){
+        char *msg = readMessage(&userTopic);
+        if (checkAllRetrieved(topic)) {
             int i = 0;
-            for(i = 0;i<MAX_MSG;i++){
+            for (i = 0; i < MAX_MSG; i++) {
                 topic->msgSlotAvailable[i] = true;
             }
         }
         return msg;
-    }else{
+    } else {
         return NULL;
     }
+}

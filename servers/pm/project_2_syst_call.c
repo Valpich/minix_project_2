@@ -6,12 +6,9 @@ const Topic defaultTopic = {.id=-1,.msgSlotAvailable = {[0 ... MAX_MSG-1] = true
 
 static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls access to critical region */
 
-static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
-
 static Subscriber subscribers[MAX_USR];
 static Publisher publishers[MAX_USR];
 static int  topicsSize = 0;
-static int  subscriberSize = 0;
 
 /********* BEGIN OF TO STRING FUNCTIONS **********/
 

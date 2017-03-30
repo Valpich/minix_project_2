@@ -79,7 +79,7 @@ void toStringTopics(const Topics * topic){
     if(topic != NULL){
         int i =0 ;
         for(i = 0; i<MAX_TOPIC ;i++){
-            printf("Topic: id is %d, name is %s, can be removed is %d.\n", i, i, topic->topicArray[i].name, topic->canBeRemoved[i]);
+            printf("Topic: id is %d, name is %s, can be removed is %d.\n", i, topic->topicArray[i].name, topic->canBeRemoved[i]);
         }
     }else{
         printf(" Topics is NULL.\n");

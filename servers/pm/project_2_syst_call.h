@@ -98,4 +98,6 @@ int publish_into_all_user_topic(const char * topicName, const char * msg, const 
 
 int findAndLockAvailableSlot(Topic * topic);
 
+int doInit();
+
 #endif /** PROJECT_2_SYST_CALL_H */

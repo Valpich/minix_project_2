@@ -1,4 +1,3 @@
-
 #include "project_2_syst_call.h"
 
 const UserTopic defaultUserTopic = {.id = -1,.messageContent = {[0 ... MAX_MSG-1] = "\0"},.name="\0",.read = {[0 ... MAX_MSG-1] = true}, .toString=toStringUserTopic};
@@ -143,6 +142,88 @@ int do_topic_publish(void){
 int do_retrieve(void){
     return 6;
 }
+
+/**
+* Not critical
+*/
+// PUBLISHER TO TEST
+
+int is_ID_set(const char * name, pid_t id){
+
+int i = 0;
+
+for(i=0 ; i<MAX_USR ; i++){
+        // find ID
+        if( id == subscribers[i].pid_subscriber){
+            // look through its UserTopic to find the name
+            int j = 0;
+            for(j=0;j<MAX_TOPIC; j++){
+                 if(strcmp(name, subscribers[i].topic[j].name) == 0){
+                    printf("already subscribed to this topic\n");
+                    // return 5 -> already subscribed
+                    return 5;
+                 }
+             }
+             // means was not found the first time -> first empty
+             for(j=0;j<MAX_TOPIC; j++){
+                 if(-1 == subscribers[i].topic[j].id){
+                    char *a = malloc(sizeof(name));
+                    strcpy(a,"\0");
+                    subscribers[i].topic[j].name = a;
+                    subscribers[i].topic[j].id = j;
+                    // return 1 -> ok 
+                    return 1;
+                 }    
+            }          
+        }
+    }
+// mean could not find ID
+return 0;
+}
+
+// used if the id was not found in the subscribers list -> not subscribed yet to any topic
+int subscribers_init(const char * name, pid_t id){
+int i = 0;
+// means the id was not found  in the subscribers -> first  init
+for(i=0 ; i<MAX_USR ; i++){
+        // Look for the first available size
+        if(-1 == subscribers[i].pid_subscriber){
+            // assign correct value to pid
+            subscribers[i].pid_subscriber =  id;
+            // look through its UserTopic to find the name
+            int j = 0;
+                     // means was not found the first time -> first empty
+             for(j=0;j<MAX_TOPIC; j++){
+                 if(-1 == subscribers[j].topic[j].id){
+                    char *a = malloc(sizeof(name));
+                    strcpy(a,"\0");
+                    subscribers[i].topic[j].name = a;
+                    subscribers[i].topic[j].id = j;
+                    // 1-> ok
+                    return 1;
+                 }    
+            } 
+    }
+}
+// could not find -1
+return 0;   
+}
+bool subscribe_to_topic(const char * name, pid_t id){
+
+    int retourValue = is_ID_set(name,id);
+    if(retourValue != 0)
+        return true;
+    retourValue  = subscribers_init(name,id);
+    if(retourValue != 0)
+        return true;
+ 
+    return false;
+}
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 
 /**
  * @Precondition Is into a critical region

@@ -145,6 +145,15 @@ void leave_critical_region_topic(int topic_id){
 }
 
 int do_topic_lookup(void){
+    if(topics != NULL){
+        int i = 0; 
+        for(i= 0; i< MAX_TOPIC;i++){
+            printf("Topic #%d : %s\n",i,topics->topicNames[i]);
+        }
+    }
+    else {
+        printf("Topics is null\n");
+    }
     return 1;
 }
 

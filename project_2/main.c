@@ -43,7 +43,14 @@ int test4(){
     printf("ret is %d.",ret);
 }
 
+int test5(){
+    int retour;
+    retour = subscribe_to_topic("aaa",3);
+
+
+}
+
 int main() {
-    test4();
+    test5();
     return 0;
 }

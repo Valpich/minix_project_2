@@ -1,3 +1,5 @@
+#include "project_2_syst_call.h"
+
 int main(){
 
   int operationSelectedNumber;

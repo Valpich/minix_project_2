@@ -8,6 +8,7 @@
 #include <sys/utsname.h>
 
 #include <string.h>
+#include <stdlib.h>
 
 #include <assert.h>
 
@@ -56,8 +57,6 @@ static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, 
 static struct Subscriber subscribers[MAX_USR];
 static int  topicsSize = 0;
 static int  subscriberSize = 0;
-static Topics topics = {{[0 ... MAX_TOPIC-1] = "\0"}, {[0 ... MAX_TOPIC-1] =1}};
-
 
 /********* BEGIN OF TO STRING FUNCTIONS **********/
 
@@ -111,35 +110,37 @@ void toStringTopics(const Topics * topic){
     if(topic != NULL){
         int i =0 ;
         for(i = 0; i<MAX_TOPIC ;i++){
-            printf("Topic %d : %s, ", i, &topic->topicNames[i]);
-            printf("Topic %d : %d, ", i, &topic->canBeRemoved[i]);
+            printf("Topic %d : name is %s, can be removed is %d.\n", i, topic->topicNames[i], topic->canBeRemoved[i]);
         }
-        printf(".\n");
     }else{
-        printf(" Topics  is NULL.\n");
+        printf(" Topics is NULL.\n");
     }
 }
 
 /********* END OF TO STRING FUNCTIONS **********/
 
+
+static Topics topics = {{[0 ... MAX_TOPIC-1] = "\0"}, {[0 ... MAX_TOPIC-1] =1}, .toString=toStringTopics};
+
+
 void down(semaphore * s){
-    printf("s in down is %d\n", *s);
+    printf("s in down is %d.\n", *s);
     while(*s == 0)sleep(1);
     *s = *s - 1;
 }
 
 void up(semaphore * s){
-    printf("s in up is %d\n", *s);
+    printf("s in up is %d.\n", *s);
     *s = *s + 1;
 }
 
 void enter_critical_region_topic(int topic_id){
-    printf("Entering critical region");
+    printf("Entering critical region.\n");
     down(&mutex[topic_id]);
 }
 
 void leave_critical_region_topic(int topic_id){
-    printf("Leaving critical region");
+    printf("Leaving critical region.\n");
     up(&mutex[topic_id]);
 }
 
@@ -147,12 +148,12 @@ int do_topic_lookup(void){
     return 1;
 }
 
-int do_topic_create(const char * name){
+int do_topic_create(void){
     printf("coucou\n");
-
-    create_new_topic(name);
-
-    //char *name = NULL;
+    
+    // create_topic(name);
+    
+    char *name = NULL;
     // strcpy(name,m_in.m3_ca1);
     printf("received value : %s \n",name);
     return 2;
@@ -179,23 +180,26 @@ int do_retrieve(void){
  */
 bool create_topic(const char * name){
     printf("Topic creation \n");
+    topics.toString(&topics);
     if(topicsSize < MAX_TOPIC){
         int i = 0;
         for(i=0; i< MAX_TOPIC; i++) {
-            if(strcmp("\0",&topics.topicNames[i]) == 0){
+            if(strcmp("\0",topics.topicNames[i]) == 0){
                 printf("Empty find at %d\n", i);
-                printf("Entering create topic lock with empty %d", empty[i]);
+                printf("Entering create topic lock with empty %d.\n", empty[i]);
                 down(&empty[i]);
                 enter_critical_region_topic(i);
-                printf("Setting name \n");
-                strcpy(&topics.topicNames[i],name);
-                printf("Topic name is %s\n",&topics.topicNames[i]);
+                printf("Setting name\n");
+                char *a = malloc(sizeof(name));
+                strcpy(a,name);
+                topics.topicNames[i] = a;
+                printf("Topic name is %s\n",topics.topicNames[i]);
                 topicsSize++;
                 printf("Topic size is %d\n",topicsSize);
                 printf("Topic created \n");
                 leave_critical_region_topic(i);
                 up(&full[i]);
-                printf("Leaving create topic lock with full %d", full[i]);
+                printf("Leaving create topic lock with full %d.\n", full[i]);
                 return true;
             }
         }
@@ -216,7 +220,7 @@ bool delete_topic(const char * name){
     for(i=0; i< MAX_TOPIC; i++) {
         if(strcmp(name,&topics.topicNames[i]) == 0){
             printf("Topic find at %d\n", i);
-            printf("Entering delete topic lock with full %d", full[i]);
+            printf("Entering delete topic lock with full %d.\n", full[i]);
             down(&full[i]);
             enter_critical_region_topic(i);
             strcpy(&topics.topicNames[i], "\0");
@@ -224,12 +228,12 @@ bool delete_topic(const char * name){
             printf("Topic deleted \n");
             leave_critical_region_topic(i);
             up(&empty[i]);
-            printf("Leaving topic delete lock with empty %d", empty[i]);
+            printf("Leaving topic delete lock with empty %d.\n", empty[i]);
             return true;
         }
     }
     printf("Topic size is %d, max amount reached\n",topicsSize);
-    printf("Unable to delete topic %s n\n", name);
+    printf("Unable to delete topic %s.\n", name);
     return false;
 }
 

@@ -1,11 +1,14 @@
 
 #include "project_2_syst_call.h"
 
+const UserTopic defaultTopic = {.id = -1,.messageContent = {[0 ... MAX_MSG-1] = "\0"},.name="\0",.read = {[0 ... MAX_MSG-1] = true}, .toString=toStringUserTopic};
+
 static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls access to critical region */
 static semaphore empty[MAX_TOPIC] = {[0 ... MAX_TOPIC-1] = MAX_MSG};	/* Count empty buffer slots */
 static semaphore full[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 0};		/* Count full buffer slots */
 
 static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
+
 static Subscriber subscribers[MAX_USR];
 static Publisher publisher[MAX_USR];
 static int  topicsSize = 0;
@@ -15,10 +18,10 @@ static int  subscriberSize = 0;
 
 void toStringUserTopic(const UserTopic * userTopic){
     if(userTopic != NULL){
-        printf("UserTopic is:\nid: %d, name: %s, messageContent: ", userTopic->id, &userTopic->name);
+        printf("UserTopic is:\nid: %d, name: %s, messageContent: ", userTopic->id, userTopic->name);
         int i = 0;
         for(i = 0; i<MAX_MSG ;i++){
-            printf("%s, ", &userTopic->messageContent[i]);
+            printf("%s, ", userTopic->messageContent[i]);
         }
         printf(" read: ");
         for(i = 0; i<MAX_MSG ;i++){
@@ -35,9 +38,9 @@ void toStringUserTopic(const UserTopic * userTopic){
 
 void toStringSubscriber(const Subscriber * subscriber){
     if(subscriber != NULL){
-        printf("Subscriber is:\npid: %d, ", subscriber->pid_subscriber);
+        printf("Subscriber is:\npid: %d, UserTopic are: \n", subscriber->pid_subscriber);
         if(subscriber->toString != NULL){
-            subscriber->toString(subscriber->topic);
+            subscriber->topic->toString(subscriber->topic);
         }
         printf(".\n");
     }else{
@@ -224,11 +227,35 @@ void create_new_user_topic(const int id, const char * name){
 /**
  * @Precondition Is into a critical region
  */
-void publish_into_user_topic(const UserTopic * userTopic, const char * msg, const int msgLocation){
+void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation){
     printf("Publishing into a user topic\n");
     char *a = malloc(sizeof(msg));
     strcpy(a,msg);
     userTopic->messageContent[msgLocation] = a;
-    //    userTopic->read[msgLocation] = false;
+    userTopic->read[msgLocation] = false;
     printf("UserTopic created\n");
+}
+
+
+int doInit(){
+    int i = 0;
+    for(i = 0; i<MAX_USR; i++){
+        subscribers[i].pid_subscriber = -1;
+        subscribers->topic[i] = defaultTopic;
+        subscribers->toString = toStringSubscriber;
+    }
+}
+
+/**
+ * @Precondition Is into a critical region
+ */
+void publish_into_all_user_topic(const char * topicName, const char * msg, const int msgLocation){
+    printf("Publishing into all user topic\n");
+    doInit();//TODO: Init at beginning
+    subscribers->toString(subscribers);
+    int i = 0;
+    for(i=0;i<MAX_USR;i++){
+        subscribers->toString(subscribers);
+    }
+    
 }

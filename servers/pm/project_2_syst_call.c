@@ -122,9 +122,9 @@ int do_topic_lookup(void){
 
 int do_topic_create(void){
     printf("coucou\n");
-    
+
     // create_topic(name);
-    
+
     char *name = NULL;
     // strcpy(name,m_in.m3_ca1);
     printf("received value : %s \n",name);
@@ -440,4 +440,31 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
     }
     puts("User not registred as published");
     return false;
+}
+
+int topic_publisher(const char * name, pid_t current_pid){
+    printf("Topic Publisher\n");
+    int j, g;
+
+    Topic  * topic = findTopicByName(name);
+    if(topic == NULL){
+        printf("Please enter a valid topic name in order to be a publisher\n");
+        return 12;
+    }else{
+        for(j = 0 ; j < MAX_USR ; j++){
+            if(publisher[j].pid_publisher == -1 || publisher[j].pid_publisher == current_pid){
+                for(g = 0 ; g < MAX_TOPIC ; g++) {
+                    if (strcmp(publisher[j].topicNames[g], "\0") == 0) {
+                        printf("j: %d, g: %d\n", j, g);
+                        publisher[j].pid_publisher = current_pid;
+                        publisher[j].topicNames[g] = name;
+                        printf("Publisher OK: %s\n", publisher[j].topicNames[g]);
+                        return 1;
+                    }
+                }
+                printf("There is no space available for you to be a publisher for this topic\n");
+                return 0;
+            }
+        }
+    }
 }

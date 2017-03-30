@@ -46,11 +46,16 @@ typedef struct Publisher{
     void (*toString)(const struct Publisher *);    /* Pointer to the display function of a Publisher */
 }Publisher;
 
+typedef struct Topics{
+    char * topicNames[MAX_TOPIC];    /* List of all topics */
+    bool canBeRemoved[MAX_TOPIC];    /* If a topic can be removed */
+}Topics;
+
 static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
 static struct Subscriber subscribers[MAX_USR];
 static int  topicsSize = 0;
 static int  subscriberSize = 0;
-static char * topicNames[MAX_TOPIC];
+static Topics topics = {{[0 ... MAX_TOPIC-1] = "\0"}, {[0 ... MAX_TOPIC-1] =1}};
 
 
 /********* BEGIN OF TO STRING FUNCTIONS **********/
@@ -160,14 +165,14 @@ bool create_topic(const char * name){
     if(topicsSize < MAX_TOPIC){
         int i = 0;
         for(i=0; i< MAX_TOPIC; i++) {
-            if(strcmp("\0",&topicNames[i]) == 0){
+            if(strcmp("\0",&topics.topicNames[i]) == 0){
                 printf("Empty find at %d\n", i);
                 printf("Entering create topic lock with empty %d", empty[i]);
                 down(&empty[i]);
                 enter_critical_region_topic(i);
                 printf("Setting name \n");
-                strcpy(&topicNames[i],name);
-                printf("Topic name is %s\n",&topicNames[i]);
+                strcpy(&topics.topicNames[i],name);
+                printf("Topic name is %s\n",&topics.topicNames[i]);
                 topicsSize++;
                 printf("Topic size is %d\n",topicsSize);
                 printf("Topic created \n");
@@ -192,12 +197,12 @@ bool delete_topic(const char * name){
     printf("Topic deletion \n");
     int i = 0;
     for(i=0; i< MAX_TOPIC; i++) {
-        if(strcmp(name,&topicNames[i]) == 0){
+        if(strcmp(name,&topics.topicNames[i]) == 0){
             printf("Topic find at %d\n", i);
             printf("Entering delete topic lock with full %d", full[i]);
             down(&full[i]);
             enter_critical_region_topic(i);
-            strcpy(&topicNames[i], "\0");
+            strcpy(&topics.topicNames[i], "\0");
             topicsSize--;
             printf("Topic deleted \n");
             leave_critical_region_topic(i);

@@ -1,7 +1,8 @@
 
 #include "project_2_syst_call.h"
 
-const UserTopic defaultTopic = {.id = -1,.messageContent = {[0 ... MAX_MSG-1] = "\0"},.name="\0",.read = {[0 ... MAX_MSG-1] = true}, .toString=toStringUserTopic};
+const UserTopic defaultUserTopic = {.id = -1,.messageContent = {[0 ... MAX_MSG-1] = "\0"},.name="\0",.read = {[0 ... MAX_MSG-1] = true}, .toString=toStringUserTopic};
+const Topic defaultTopic = {.id=-1,.msgSlotAvailable = {[0 ... MAX_MSG-1] = true}, .name = "\0", .toString=toStringTopic};
 
 static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls access to critical region */
 static semaphore empty[MAX_TOPIC] = {[0 ... MAX_TOPIC-1] = MAX_MSG};	/* Count empty buffer slots */
@@ -78,7 +79,7 @@ void toStringTopics(const Topics * topic){
     if(topic != NULL){
         int i =0 ;
         for(i = 0; i<MAX_TOPIC ;i++){
-            printf("Topic %d : name is %s, can be removed is %d.\n", i, topic->topicArray[i].name, topic->canBeRemoved[i]);
+            printf("Topic: id is %d, name is %s, can be removed is %d.\n", i, i, topic->topicArray[i].name, topic->canBeRemoved[i]);
         }
     }else{
         printf(" Topics is NULL.\n");
@@ -87,8 +88,7 @@ void toStringTopics(const Topics * topic){
 
 /********* END OF TO STRING FUNCTIONS **********/
 
-
-static Topics topics = {{[0 ... MAX_TOPIC-1] = "\0"}, {[0 ... MAX_TOPIC-1] =1}, .toString=toStringTopics};
+static Topics topics = {.canBeRemoved = {[0 ... MAX_TOPIC-1] =1}, .toString=toStringTopics};
 
 
 void down(semaphore * s){
@@ -253,32 +253,53 @@ int doInit(){
     int i = 0;
     for(i = 0; i<MAX_USR; i++){
         subscribers[i].pid_subscriber = -1;
-        subscribers->topic[i] = defaultTopic;
+        subscribers->topic[i] = defaultUserTopic;
         subscribers->toString = toStringSubscriber;
+    }
+    for(i = 0; i<MAX_TOPIC; i++){
+        topics.topicArray[i] = defaultTopic;
     }
 }
 
 /**
  * @Precondition Is into a critical region
  */
-void publish_into_all_user_topic(const char * topicName, const char * msg, const int msgLocation){
+int publish_into_all_user_topic(const char * topicName, const char * msg, const int msgLocation){
     printf("Publishing into all user topic\n");
     doInit();//TODO: Init at beginning
     subscribers->toString(subscribers);
     int i = 0;
-    int topicId = -2;
+    Topic  * topic = NULL;
     for(i=0;i<MAX_TOPIC;i++) {
         if (strcmp(topics.topicArray[i].name, topicName) == 0) {
-            topicId = topicId = i;
+            topic = &topics.topicArray[i];
         }
+    }
+    if(topic == NULL){
+        return TOPIC_NOT_FOUND;
+    }
+    int slot = findAndLockAvailableSlot(topic);
+    if(slot == -1){
+        return NOT_SLOT_AVAILABLE;
     }
     for(i=0;i<MAX_USR;i++){
         int j = 0;
         for(j=0;j<MAX_TOPIC;j++){
-            if(subscribers[i].topic[j].id == topicId) {
-                publish_into_user_topic(&subscribers[i].topic[j], msg, 1);
+            if(subscribers[i].topic[j].id == topic->id) {
+                publish_into_user_topic(&subscribers[i].topic[j], msg, slot);
             }
         }
     }
-    
+    return slot;
+}
+
+int findAndLockAvailableSlot(Topic * topic){
+    int i = 0;
+    for(i = 0;i<MAX_MSG;i++){
+        if(topic->msgSlotAvailable[i] == true){
+            topic->msgSlotAvailable[i] = false;
+            return i;
+        }
+    }
+    return -1;
 }

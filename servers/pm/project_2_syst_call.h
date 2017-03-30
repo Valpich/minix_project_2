@@ -22,6 +22,8 @@
 #define MAX_MSG 5   /* Number of message for each topic */
 #define MAX_TOPIC 10    /* Number of allowed topics for each topic */
 #define MAX_USR 30  /* Number of allowed user */
+#define TOPIC_NOT_FOUND -2
+#define NOT_SLOT_AVAILABLE -3
 
 typedef int semaphore;  /* Define semaphore as a type */
 
@@ -48,6 +50,7 @@ typedef struct Publisher{
 }Publisher;
 
 typedef struct Topic{
+    int id; /* Topic id */
     char * name;    /* List of all topics */
     bool msgSlotAvailable[MAX_MSG];    /* If a message can be removed */
     void (*toString)(const struct Topic *);  /* Pointer to the display function of a Topic */
@@ -64,6 +67,8 @@ void toStringUserTopic(const UserTopic * userTopic);
 void toStringSubscriber(const Subscriber * subscriber);
 
 void toStringPublisher(const Publisher * publisher);
+
+void toStringTopic(const Topic * topic);
 
 void toStringTopics(const Topics * topic);
 
@@ -87,6 +92,8 @@ bool delete_topic(const char * name);
 
 void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation);
 
-void publish_into_all_user_topic(const char * topicName, const char * msg, const int msgLocation);
+int publish_into_all_user_topic(const char * topicName, const char * msg, const int msgLocation);
+
+int findAndLockAvailableSlot(Topic * topic);
 
 #endif /** PROJECT_2_SYST_CALL_H */

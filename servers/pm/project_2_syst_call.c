@@ -125,7 +125,7 @@ void unpublish_lock(int topic_id){
 }
 
 int do_topic_lookup(void){
-    int i = 0;
+       int i = 0;
     for(i=0 ; i< MAX_TOPIC ; i++){
         printf("Topic %d is : %s \n",i, &topicNames[i] );
     }

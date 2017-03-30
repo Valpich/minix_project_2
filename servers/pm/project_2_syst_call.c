@@ -1,29 +1,21 @@
 
 #include "project_2_syst_call.h"
 
-#include "pm.h"
-#include <minix/callnr.h>
+
 #include <signal.h>
-#include <sys/svrctl.h>
+
 #include <sys/resource.h>
 #include <sys/utsname.h>
-#include <minix/com.h>
-#include <minix/config.h>
-#include <minix/sysinfo.h>
-#include <minix/type.h>
-#include <minix/vm.h>
+
 #include <string.h>
-#include <machine/archtypes.h>
-#include <lib.h>
+
 #include <assert.h>
-#include "mproc.h"
-#include "param.h"
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
-#include <lib.h>
-#include <malloc.h>
+
 #include <sys/wait.h>
 
 #define MAX_MSG 5	/* Number of message for each topic */
@@ -39,11 +31,13 @@ typedef struct UserTopic{
     char * name;    /* Topic name */
     char * messageContent[MAX_MSG]; /* Message content of a Topic */
     bool read[MAX_MSG]; /* If the message was read */
+    void (*toString)(const struct UserTopic *); /* Pointer to the display function of a UserTopic*/
 }UserTopic;
 
 typedef struct Subscriber{
     pid_t pid_subscriber;   /* Subscriber pid_t */
     struct UserTopic topic[MAX_TOPIC];   /* Topics subscribed */
+    void (*toString)(const struct Subscriber *); /* Pointer to the display function of a Subscriber */
 }Subscriber;
 
 static int messageOfTopicToRead[MAX_TOPIC][MAX_MSG] = {[0 ... MAX_TOPIC-1] = 0, [0 ... MAX_MSG-1] = 0};   /* Count the topics that  subscribed */
@@ -51,6 +45,43 @@ static struct Subscriber subscribers[MAX_USR];
 static int  topicsSize = 0;
 static int  subscriberSize = 0;
 static char * topicNames[MAX_TOPIC];
+
+
+/********* BEGIN OF TO STRING FUNCTIONS **********/
+
+void toStringUserTopic(const UserTopic * userTopic){
+    if(userTopic != NULL){
+        printf("UserTopic is:\nid: %d, name: %s, messageContent: ", userTopic->id, &userTopic->name);
+        int i = 0;
+        for(i = 0; i<MAX_MSG ;i++){
+            printf("%s, ", &userTopic->messageContent[i]);
+        }
+        printf(" read: ");
+        for(i = 0; i<MAX_MSG ;i++){
+            printf("%d", userTopic->read[i]);
+            if(i<MAX_MSG-1){
+                printf(",");
+            }
+        }
+        printf(".\n");
+    }else{
+        printf("UserTopic is NULL.\n");
+    }
+}
+
+void toStringSubscriber(const Subscriber * subscriber){
+    if(subscriber != NULL){
+        printf("Subscriber is:\npid: %d, ", subscriber->pid_subscriber);
+        if(subscriber->toString != NULL){
+            subscriber->toString(subscriber->topic);
+        }
+        printf(".\n");
+    }else{
+        printf("UserTopic is NULL.\n");
+    }
+}
+
+/********* END OF TO STRING FUNCTIONS **********/
 
 void down(semaphore * s){
     printf("s in down is %d\n", *s);
@@ -121,6 +152,9 @@ int do_retrieve(void){
     return 6;
 }
 
+/**
+ * @Precondition Is into a critical region
+ */
 bool create_new_topic(const char * name){
     printf("Topic creation \n");
     if(topicsSize < MAX_TOPIC){
@@ -137,12 +171,38 @@ bool create_new_topic(const char * name){
     }
 }
 
+/**
+ * @Precondition Is into a critical region
+ */
 void create_new_user_topic(const int id, const char * name){
     printf("UserTopic creation \n");
     UserTopic userTopic;
+    printf("Setting userTopicToString method \n");
+    userTopic.toString = toStringUserTopic;
     printf("Setting id \n");
     userTopic.id = id;
     printf("Setting user topic name \n");
     strcpy(&userTopic.name,name);
+    printf("Setting messages to \0 in user topic \n");
+    int i = 0;
+    for(i = 0; i<MAX_MSG ;i++){
+        strcpy(&userTopic.messageContent[i],"\0");
+    }
+    printf("Setting messages read to true in user topic \n");
+    for(i = 0; i<MAX_MSG ;i++){
+        userTopic.read[i] = true;
+    }
+    printf("Printing user topic \n");
+    userTopic.toString(&userTopic);
+    printf("UserTopic created \n");
+}
+
+/**
+ * @Precondition Is into a critical region
+ */
+void publish_into_user_topic(const UserTopic * userTopic, const char * msg, const int msgLocation){
+    printf("Publishing into a user topic \n");
+    strcpy(userTopic->messageContent[msgLocation],msg);
+    //    userTopic->read[msgLocation] = false;
     printf("UserTopic created \n");
 }

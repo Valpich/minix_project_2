@@ -227,14 +227,18 @@ bool delete_topic(const char * name){
     printf("Topic deletion \n");
     int i = 0;
     for(i=0; i< MAX_TOPIC; i++) {
-        if(strcmp(name,&topics.topicNames[i]) == 0){
-            printf("Topic find at %d\n", i);
+        if(strcmp(name,topics.topicNames[i]) == 0){
+            printf("Topic find at %d.\n", i);
             printf("Entering delete topic lock with full %d.\n", full[i]);
             down(&full[i]);
             enter_critical_region_topic(i);
-            strcpy(&topics.topicNames[i], "\0");
+            char * toDelete = topics.topicNames[i];
+            free(toDelete);
+            char *a = malloc(sizeof("\0"));
+            strcpy(a,"\0");
+            topics.topicNames[i] = a;
             topicsSize--;
-            printf("Topic deleted \n");
+            printf("Topic deleted.\n");
             leave_critical_region_topic(i);
             up(&empty[i]);
             printf("Leaving topic delete lock with empty %d.\n", empty[i]);
@@ -245,6 +249,7 @@ bool delete_topic(const char * name){
     printf("Unable to delete topic %s.\n", name);
     return false;
 }
+
 
 /**
  * @Precondition Is into a critical region

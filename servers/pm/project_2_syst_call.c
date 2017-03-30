@@ -173,7 +173,7 @@ bool create_topic(const char * name){
                 printf("Topic created \n");
                 leave_critical_region_topic(i);
                 up(&full[i]);
-                printf("Leaving publish lock with full %d", full[i]);
+                printf("Leaving create topic lock with full %d", full[i]);
                 return true;
             }
         }
@@ -194,7 +194,7 @@ bool delete_topic(const char * name){
     for(i=0; i< MAX_TOPIC; i++) {
         if(strcmp(name,&topicNames[i]) == 0){
             printf("Topic find at %d\n", i);
-            printf("Entering publish lock with full %d", full[i]);
+            printf("Entering delete topic lock with full %d", full[i]);
             down(&full[i]);
             enter_critical_region_topic(i);
             strcpy(&topicNames[i], "\0");
@@ -202,8 +202,7 @@ bool delete_topic(const char * name){
             printf("Topic deleted \n");
             leave_critical_region_topic(i);
             up(&empty[i]);
-            printf("Leaving publish lock with empty %d", empty[i]);
-            
+            printf("Leaving topic delete lock with empty %d", empty[i]);
             return true;
         }
     }

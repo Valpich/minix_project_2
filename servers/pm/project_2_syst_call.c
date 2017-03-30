@@ -87,7 +87,11 @@ static Topics topics = {.canBeRemoved = {[0 ... MAX_TOPIC-1] =1}, .toString=toSt
 
 void down(semaphore * s){
     printf("s in down is %d.\n", *s);
-    while(*s == 0)sleep(1);
+    int test = *s == 0;
+    while(test){
+        test = *s == 0;
+        sleep(1);
+    }
     *s = *s - 1;
 }
 
@@ -107,7 +111,9 @@ void leave_critical_region_topic(int topic_id){
 }
 
 void checkNotDown(semaphore * s){
-    while(*s == 0){
+    int test = *s == 0;
+    while(test){
+        test = *s == 0;
         printf("Waiting critical region to be free.\n");
         sleep(1);
     }
@@ -463,7 +469,7 @@ char * readMessage(UserTopic *userTopic){
 char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicName) {
     Topic *topic = findTopicByName(topicName);
     if (topic != NULL) {
-        wait_read_critical_region_topic(topic);
+        wait_read_critical_region_topic(topic->id);
         int positionOfTheTopic = findUserTopicPosition(subscriber, topic);
         UserTopic userTopic = subscriber->topic[positionOfTheTopic];
         char *msg = readMessage(&userTopic);

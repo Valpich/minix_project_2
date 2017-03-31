@@ -90,15 +90,14 @@ int main(){
       default:
         printf("\nDefault Operation selected\n");
       }
-      puts("");
-      printf("----------- Continue(y/n) :");
-      choice = scanf(" %c",&choice);;
-      while (choice != 'y' || choice != 'n') {
-        puts("");
-        printf("----------- Continue(y/n) :");
-        scanf("%c",&choice);
+      do {
         clean_stdin();
-      }
+        puts("----------- Continue(y/n) :");
+        scanf("%c",&choice);
+          printf("scanned %c",choice);
+          puts("");
+        clean_stdin();
+      }while (choice != 'y' || choice != 'n');
     }while(choice=='y');
 
   return 0;

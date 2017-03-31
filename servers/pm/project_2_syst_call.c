@@ -633,6 +633,7 @@ char * readMessage(UserTopic *userTopic){
             return msg;
         }
     }
+    return NULL;
 }
 
 /**

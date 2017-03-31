@@ -279,6 +279,7 @@ int do_retrieve(void){
 /********* BEGIN OF UTILITY METHODS **********/
 
 int doInit(){
+    int i =0;
     puts("DOING INIT");
     for(i = 0; i<MAX_USR; i++){
         subscribers[i].pid_subscriber = INVALID_PID;

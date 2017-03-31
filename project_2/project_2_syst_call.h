@@ -94,6 +94,8 @@ bool delete_topic(const char * name);
 
 Topic * findTopicByName(const char * name);
 
+Publisher * findPublisherById(pid_t id);
+
 void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation);
 
 int publish_into_all_user_topic(const char * topicName, const char * msg);
@@ -105,5 +107,7 @@ int doInit();
 int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher);
 
 bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher);
+
+int topic_publisher(const char * name, pid_t current_pid);
 
 #endif /** PROJECT_2_SYST_CALL_H */

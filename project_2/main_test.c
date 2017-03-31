@@ -29,6 +29,7 @@ int main(){
   char TopicName[100];
   char TopicContent[100];
   int continueResult = 1;
+  char c;
   do{
     printf("\n----------- Welcome -----------");
     printf("\n1. Create new TOPIC (TopicCreate)");

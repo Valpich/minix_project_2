@@ -25,7 +25,6 @@ int main(){
     printf("\n7. Publish Message (Publish)");
     printf("\n8. Receive Message (Retrieve)");
     printf("\n9. Clear Buffer");
-    printf("\n Enter your choice: ");
     puts("");
     char c;
     do{
@@ -91,14 +90,13 @@ int main(){
       default:
         printf("\nDefault Operation selected\n");
       }
-
       printf("\n\n----------- Continue(y/n) :");
       puts("");
     choice = scanf(" %c",&choice);;
       while (choice != 'y' || choice != 'n') {
         printf("\n\n----------- Continue(y/n) :");
         puts("");
-        scanf(" %c",&choice);
+        scanf("%c",&choice);
         clean_stdin();
       }
     }while(choice=='y');

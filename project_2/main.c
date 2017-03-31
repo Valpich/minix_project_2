@@ -75,11 +75,10 @@ int test4(){
     printf("message retrieved is %s.\n",msg);
     msg = retrieve_msg_of_topic(getpid(),"Hi");
     printf("message retrieved is %s.\n",msg);
+    printAllPublisher();
 }
-
 
 int main() {
     test4();
-    
     return 0;
 }

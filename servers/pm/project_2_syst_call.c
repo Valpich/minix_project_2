@@ -661,6 +661,14 @@ bool delete_topic(const char * name){
     return false;
 }
 
+void printAllPublisher(){
+    int i =0;
+    for(i=0;i<MAX_USR;i++){
+        if(publishers[i].pid_publisher != INVALID_PID){
+            publishers[i].toString(&publishers[i]);
+        }
+    }
+}
 /********* END OF CORE METHODS **********/
 
 /********* END OF INTERNAL METHODS **********/

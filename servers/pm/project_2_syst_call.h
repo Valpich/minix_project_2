@@ -182,6 +182,9 @@ char * retrieve_msg_of_topic(const pid_t pid, const char * topicName);
 char * readMessage(UserTopic *userTopic);
 
 bool delete_topic(const char * name);
+
+void printAllPublisher();
+
 /********* END OF CORE METHODS **********/
 
 /********* END OF INTERNAL METHODS **********/

@@ -191,7 +191,7 @@ int do_topic_create(void){
     strcpy(topic_name,m_in.m3_ca1);
 #endif
     printf("received value : %s \n",topic_name);
-    //success = create_topic(topic_name);
+    success = create_topic(topic_name);
     if(success){
         return DO_TOPIC_CREATE_SUCCESS_RETURN;
     }else {

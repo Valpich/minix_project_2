@@ -28,7 +28,7 @@ int main(){
     puts("");
     char c;
     do{
-        printf("\n Enter your choice: ");
+        puts("Enter your choice:");
     } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9);
     switch (operationSelectedNumber) {
 
@@ -90,12 +90,12 @@ int main(){
       default:
         printf("\nDefault Operation selected\n");
       }
-      printf("\n\n----------- Continue(y/n) :");
       puts("");
-    choice = scanf(" %c",&choice);;
+      printf("----------- Continue(y/n) :");
+      choice = scanf(" %c",&choice);;
       while (choice != 'y' || choice != 'n') {
-        printf("\n\n----------- Continue(y/n) :");
         puts("");
+        printf("----------- Continue(y/n) :");
         scanf("%c",&choice);
         clean_stdin();
       }

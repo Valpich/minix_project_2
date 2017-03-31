@@ -15,6 +15,8 @@ int main(){
   char TopicName[100];
   char TopicContent[100];
   char choice;
+  char yes = 'y';
+  char no = 'n';
   do{
     printf("\n----------- Welcome -----------");
     printf("\n1. Create new TOPIC (TopicCreate)");
@@ -97,8 +99,8 @@ int main(){
         printf("scanned %c",choice);
         puts("");
         clean_stdin();
-      }while (strcmp('y',&choice) == 0 || strcmp('n',&choice) == 0);
-    }while(strcmp('y',&choice) == 0);
+      }while (strcmp(&yes,&choice) == 0 || strcmp(&no,&choice) == 0);
+    }while(strcmp(&yes,&choice) == 0);
 
   return 0;
 }

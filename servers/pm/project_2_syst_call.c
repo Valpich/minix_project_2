@@ -158,7 +158,7 @@ void checkNotDown(semaphore * s){
     int test = *s == 0;
     while(test){
         test = *s == 0;
-        printf("Waiting critical region to be free.\n");
+        printf("Waiting critical region to be available.\n");
         sleep(1);
     }
 }
@@ -299,8 +299,6 @@ int doInit(){
         for(j = 0; j<MAX_TOPIC; j++){
             char * name = malloc(sizeof("\0"));
             strcpy(name,"\0");
-            char * old = publishers[j].topicNames[j];
-            free(old);
             publishers[i].topicNames[j] = name;
         }
         publishers[i].toString = toStringPublisher;
@@ -519,8 +517,6 @@ int topic_publisher(const char * name, pid_t user_pid){
                         publishers[j].pid_publisher = user_pid;
                         char * topicName = malloc(sizeof(name));
                         strcpy(topicName,name);
-                        char * old = publishers[j].topicNames[g];
-                        free(old);
                         publishers[j].topicNames[g] = topicName;
                         printf("Publisher OK: %s\n", publishers[j].topicNames[g]);
                         return PUBLISHER_REGISTRED;
@@ -606,13 +602,7 @@ int publish_msg_into_topic(const char * topicName, const char * msg, const Publi
 
 char * retrieve_msg_of_topic(const pid_t user_pid, const char * topicName) {
     Topic *topic = findTopicByName(topicName);
-    if(topic == NULL){
-        puts("Topic not found");
-    }
     Subscriber * subscriber = findSubscriberByPid(user_pid);
-    if(subscriber == NULL){
-        puts("Subscriber not found");
-    }
     if (topic != NULL && subscriber != NULL) {
         wait_read_critical_region_topic(topic->id);
         int positionOfTheTopic = findUserTopicPosition(subscriber, topic);
@@ -636,7 +626,6 @@ char * readMessage(UserTopic *userTopic){
             userTopic->read[i] = true;
             char * msg = malloc(sizeof(userTopic->messageContent[i]));
             strcpy(msg,userTopic->messageContent[i]);
-            free(userTopic->messageContent[i]);
             char * erased = malloc(sizeof("\0"));
             strcpy(erased,"\0");
             userTopic->messageContent[i]= erased;
@@ -656,8 +645,6 @@ bool delete_topic(const char * name){
         if(strcmp(name,topics.topicArray[i].name) == 0){
             printf("Topic find at %d.\n", i);
             enter_critical_region_topic(i);
-            char * toDelete = topics.topicArray[i].name;
-            free(toDelete);
             char *a = malloc(sizeof("\0"));
             strcpy(a,"\0");
             topics.topicArray[i].name = a;

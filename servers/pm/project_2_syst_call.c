@@ -248,6 +248,7 @@ int do_topic_publish(void){
     strcpy(topic_content,m_in.m6_p1);
     id=m_in.m1_i1;
     Publisher * publisher = findPublisherById(id);
+    printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, topic_name);
     returnValue = publish_msg_into_topic(topic_name, topic_content, publisher);
 #endif
     return returnValue;

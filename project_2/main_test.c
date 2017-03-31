@@ -93,11 +93,11 @@ int main(){
       }
 
       printf("\n\n----------- Continue(y/n) :");
-      puts();
+      puts("");
     choice = scanf(" %c",&choice);;
       while (choice != 'y' || choice != 'n') {
         printf("\n\n----------- Continue(y/n) :");
-        puts();
+        puts("");
         scanf(" %c",&choice);
         clean_stdin();
       }

@@ -99,7 +99,7 @@ int main(){
         printf("scanned %c",choice);
         puts("");
         clean_stdin();
-      }while (strcmp(&yes,&choice) == 0 || strcmp(&no,&choice) == 0);
+      }while(strcmp(&yes,&choice) != 0 || strcmp(&no,&choice) != 0);
     }while(strcmp(&yes,&choice) == 0);
 
   return 0;

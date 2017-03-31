@@ -2,6 +2,7 @@
 #include "project_2_usr_lib.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int clean_stdin(){
     while (getchar()!='\n');
@@ -91,14 +92,13 @@ int main(){
         printf("\nDefault Operation selected\n");
       }
       do {
-        clean_stdin();
         puts("----------- Continue(y/n) :");
         scanf("%c",&choice);
-          printf("scanned %c",choice);
-          puts("");
+        printf("scanned %c",choice);
+        puts("");
         clean_stdin();
-      }while (choice != 'y' || choice != 'n');
-    }while(choice=='y');
+      }while (strcmp('y',choice) == 0 || strcmp('n',choice) == 0);
+    }while(strcmp('y',choice) == 0);
 
   return 0;
 }

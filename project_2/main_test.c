@@ -31,83 +31,82 @@ int main(){
   int continueResult = 1;
   char c;
   do{
-    printf("\n----------- Welcome -----------");
-    printf("\n1. Create new TOPIC (TopicCreate)");
-    printf("\n2. Show Available Topics (TopicLookup)");
-    printf("\n3. Register as Publisher (TopicPublisher)");
-    printf("\n4. Register as Subscriber (TopicSubscriber)");
-    printf("\n5. Publisher Details");
-    printf("\n6. Subscriber Details");
-    printf("\n7. Publish Message (Publish)");
-    printf("\n8. Receive Message (Retrieve)");
-    printf("\n9. Clear Buffer");
+    puts("----------- Welcome -----------");
+    puts("1. Create new TOPIC (TopicCreate)");
+    puts("2. Show Available Topics (TopicLookup)");
+    puts("3. Register as Publisher (TopicPublisher)");
+    puts("4. Register as Subscriber (TopicSubscriber)");
+    puts("5. Publisher Details");
+    puts("6. Subscriber Details");
+    puts("7. Publish Message (Publish)");
+    puts("8. Receive Message (Retrieve)");
+    puts("9. Clear Buffer");
     puts("");
     do{
         puts("Enter your choice:");
     } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9);
     switch (operationSelectedNumber) {
       case 1:
-        printf("\nTOPIC CREATE\n");
-        printf("Enter Topic Name: ");
+        puts("TOPIC CREATE");
+        puts("Enter Topic Name: ");
         scanf("%s", TopicName);
         if(topic_create(TopicName) == DO_TOPIC_CREATE_SUCCESS_RETURN){
-          printf("\nTopic created !\n");
+          puts("Topic created !");
         }else{
-          printf("\nTopic not created\n");
+          puts("Topic not created");
         }
         continueResult = continueProgram();
       break;
       case 2:
-        printf("\nTOPIC LOOKUP\n");
+        puts("TOPIC LOOKUP");
         topic_lookup();
         continueResult = continueProgram();
       break;
       case 3:
-        printf("\nREGISTER AS PUBLISHER\n");
+        puts("REGISTER AS PUBLISHER");
         topic_lookup();
-        printf("Enter the Topic you want to be register as a publisher: \n");
+        puts("Enter the Topic you want to be register as a publisher:");
         scanf("%s",TopicName);
         topic_publisher(TopicName);
         continueResult = continueProgram();
       break;
       case 4:
-        printf("\nREGISTER AS SUBSCRIBER\n");
+        puts("REGISTER AS SUBSCRIBER");
         topic_lookup();
-        printf("Enter the Topic you want to be register as a subscriber: \n");
-        puts("");
+        puts("Enter the Topic you want to be register as a subscriber:");
         scanf("%s",TopicName);
         topic_subscriber(TopicName);
         continueResult = continueProgram();
       break;
       case 5:
-        printf("\nPUBLISHER DETAILS\n");
+        puts("PUBLISHER DETAILS");
         continueResult = continueProgram();
       break;
       case 6:
-        printf("\nSUBSCRIBER DETAILS\n");
+        puts("SUBSCRIBER DETAILS");
         continueResult = continueProgram();
       break;
       case 7:
-        printf("\nPUBLISH\n");
+        puts("PUBLISH");
         topic_lookup();
-        printf("Enter the Topic you want to publish into:");
+        puts("Enter the Topic you want to publish into:");
         scanf("%s", TopicName);
-        printf("Enter the Content of your topic (max. 100 char): ");
+        puts("Enter the Content of your topic (max. 100 char):");
         scanf("%s", TopicContent);
         topic_publish(TopicName, TopicContent);
         continueResult = continueProgram();
       break;
       case 8:
-        printf("\nRECEIVE\n");
+        puts("RECEIVE");
         topic_retrieve();
         continueResult = continueProgram();
       break;
       case 9:
-        printf("\nCLEAR\n");
+        puts("CLEAR");
         continueResult = continueProgram();
       break;
       default:
-        printf("\nDefault Operation selected\n");
+        puts("Default Operation selected");
         break;
       }
     }while(continueResult == 1);

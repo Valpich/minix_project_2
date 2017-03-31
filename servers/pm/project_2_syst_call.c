@@ -264,13 +264,14 @@ int do_retrieve(void){
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);
     id=m_in.m1_i1;
+    printf("Trying to retrieve message from the topic %s\n", topic_name);
     msg = retrieve_msg_of_topic(id, topic_name);
 #endif
     if(msg != NULL){
         printf("%s", msg);
         return DO_RETRIEVE_SUCCESS_RETURN;
     }else {
-        printf("Noting to retrieve");
+        printf("Noting to retrieve.\n");
         return DO_RETRIEVE_FAILURE_RETURN;
     }
 }

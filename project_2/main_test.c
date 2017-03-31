@@ -8,13 +8,6 @@ int main(){
   char TopicName[100];
   char TopicContent[100];
 
-  int i = 0;
-  for(i = 0; i<MAX_USR; i++){
-    publisher[i].pid_publisher = -1;
-    publisher->topicNames[i] = "";
-    publisher->toString = toStringPublisher;
-  }
-
   do{
     printf("\n----------- Welcome -----------");
     printf("\n1. Create new TOPIC (TopicCreate)");

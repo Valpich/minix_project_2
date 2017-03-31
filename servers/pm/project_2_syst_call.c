@@ -1,13 +1,5 @@
 #include "project_2_syst_call.h"
 
-const Topic defaultTopic = {.id=INVALID_ID,.msgSlotAvailable = {[0 ... MAX_MSG-1] = true}, .name = "\0", .toString=toStringTopic};
-
-static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls access to critical region */
-
-static Subscriber subscribers[MAX_USR];
-static Publisher publishers[MAX_USR];
-static int topicsSize = 0;
-static bool initDone = false;
 
 /********* BEGIN OF TO STRING FUNCTIONS **********/
 
@@ -117,8 +109,25 @@ void toStringAllSubscriber(const Subscriber subscriber[]){
 
 /********* END OF TO STRING FUNCTIONS **********/
 
+/********* BEGIN OF PUBLIC VARIABLE DECLARATION **********/
+
+const Topic defaultTopic = {.id=INVALID_ID,.msgSlotAvailable = {[0 ... MAX_MSG-1] = true}, .name = "\0", .toString=toStringTopic};
+
+static semaphore mutex[MAX_TOPIC]  = {[0 ... MAX_TOPIC-1] = 1};	/* Controls access to critical region */
+
+static Subscriber subscribers[MAX_USR];
+
+static Publisher publishers[MAX_USR];
+
+static int topicsSize = 0;
+
+static bool initDone = false;
+
 static Topics topics = {.canBeRemoved = {[0 ... MAX_TOPIC-1] =1}, .toString=toStringTopics};
 
+/********* END OF PUBLIC VARIABLE DECLARATION **********/
+
+/********* BEGIN OF SEMAPHORE METHODS **********/
 
 void down(semaphore * s){
     printf("s in down is %d.\n", *s);
@@ -158,17 +167,16 @@ void wait_read_critical_region_topic(int topic_id){
     checkNotDown(&mutex[topic_id]);
 }
 
+/********* END OF SEMAPHORE METHODS **********/
+
+/********* BEGIN OF SYSTEM CALL METHODS **********/
+
 int do_topic_lookup(void){
     if(initDone == false){
         doInit();
     }
     printf("do_topic_lookup\n");
-    int i = 0;
-    for(i= 0; i< MAX_TOPIC;i++){
-        if(strcmp("\0",topics.topicArray[i].name) != 0){
-            printf("Topic #%d : %s\n",i,topics.topicArray[i].name);
-        }
-    }
+    lookup();
     return DO_TOPIC_LOOKUP_SUCCESS_RETURN;
 }
 
@@ -264,9 +272,125 @@ int do_retrieve(void){
     }
 }
 
-/**
- * Not critical
- */
+/********* END OF SYSTEM CALL METHODS **********/
+
+/********* BEGIN OF INTERNAL METHODS **********/
+
+/********* BEGIN OF UTILITY METHODS **********/
+
+int doInit(){
+    int i = 0;
+    for(i = 0; i<MAX_USR; i++){
+        subscribers[i].pid_subscriber = INVALID_PID;
+        int j = 0;
+        for(j=0;j<MAX_TOPIC;j++){
+            UserTopic defaultUserTopic = {.id = INVALID_ID,.messageContent = {[0 ... MAX_MSG-1] = "\0"},.name="\0",.read = {[0 ... MAX_MSG-1] = true}, .toString=toStringUserTopic};
+            subscribers[i].userTopic[j] = defaultUserTopic;
+        }
+        subscribers[i].toString = toStringSubscriber;
+    }
+    for(i = 0; i<MAX_USR; i++){
+        publishers[i].pid_publisher= INVALID_PID;
+        int j = 0;
+        for(j = 0; j<MAX_TOPIC; j++){
+            char * name = malloc(sizeof("\0"));
+            strcpy(name,"\0");
+            char * old = publishers[j].topicNames[j];
+            free(old);
+            publishers[i].topicNames[j] = name;
+        }
+        publishers[i].toString = toStringPublisher;
+    }
+    for(i = 0; i<MAX_TOPIC; i++){
+        topics.topicArray[i] = defaultTopic;
+    }
+    initDone = true;
+    return EXIT_SUCCESS;
+}
+
+Topic * findTopicByName(const char * name){
+    int i = 0;
+    for(i=0;i<MAX_TOPIC;i++) {
+        if (strcmp(topics.topicArray[i].name, name) == 0) {
+            return &topics.topicArray[i];
+        }
+    }
+    return NULL;
+}
+
+
+Subscriber * findSubscriberByPid(const pid_t pid) {
+    int i = 0;
+    for(i =0;i<MAX_USR; i++){
+        if(subscribers[i].pid_subscriber == pid){
+            return &subscribers[i];
+        }
+    }
+    return NULL;
+}
+
+Publisher * findPublisherById(pid_t id){
+    int i = 0;
+    for(i=0;i<MAX_USR;i++){
+        if(publishers[i].pid_publisher == id){
+            return &publishers[i];
+        }
+    }
+    return NULL;
+}
+
+int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic){
+    int i = 0;
+    for(i =0;i<MAX_TOPIC; i++){
+        if(subscriber->userTopic[i].id == topic->id){
+            return i;
+        }
+    }
+    return INVALID_POSITION;
+}
+
+int findAndLockAvailableSlot(Topic * topic){
+    int i = 0;
+    for(i = 0;i<MAX_MSG;i++){
+        if(topic->msgSlotAvailable[i] == true){
+            topic->msgSlotAvailable[i] = false;
+            return i;
+        }
+    }
+    return INVALID_POSITION;
+}
+
+bool checkAllRetrieved(const Topic * topic, const int slot){
+    int i = 0;
+    for(i=0;i<MAX_USR;i++){
+        if(subscribers[i].pid_subscriber != INVALID_POSITION){
+            if(subscribers[i].userTopic->id!= INVALID_POSITION) {
+                if (subscribers[i].userTopic[topic->id].read[slot] != true) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher){
+    int i = 0;
+    int j = 0;
+    for(i = 0; i<MAX_USR; i++){
+        if(publishers[i].pid_publisher == publisher->pid_publisher){
+            for(j = 0; j<MAX_TOPIC; j++) {
+                if (strcmp(publishers[i].topicNames[j], topicName) == 0) {
+                    puts("User registred as publisher");
+                    return true;
+                }
+            }
+        }
+    }
+    puts("User not registred as publisher");
+    return false;
+}
+
 int is_ID_set(const char * name, pid_t id){
     int i = 0;
     for(i=0 ; i<MAX_USR ; i++){
@@ -325,22 +449,19 @@ int subscribers_init(const char * name, pid_t id){
     // could not find INVALID_ID
     return INVALID_POSITION;
 }
-bool subscribe_to_topic(const char * name, pid_t id){
-    int returnValue = is_ID_set(name,id);
-    printf("returnValue is %d\n.",returnValue);
-    if(returnValue != INVALID_POSITION)
-        return true;
-    returnValue  = subscribers_init(name,id);
-    printf("returnValue is %d\n.",returnValue);
-    if(returnValue != INVALID_POSITION)
-        return true;
-    return false;
+
+/********* END OF UTILITY METHODS **********/
+
+/********* BEGIN OF CORE METHODS **********/
+
+void lookup() {
+    int i = 0;
+    for(i= 0; i< MAX_TOPIC;i++){
+        if(strcmp("\0",topics.topicArray[i].name) != 0){
+            printf("Topic #%d : %s\n",i,topics.topicArray[i].name);
+        }
+    }
 }
-
-// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
 
 /**
  * @Precondition Is into a critical region
@@ -378,229 +499,6 @@ bool create_topic(const char * name){
     }
 }
 
-/**
- * @Precondition Is into a critical region
- */
-bool delete_topic(const char * name){
-    printf("Topic deletion \n");
-    int i = 0;
-    for(i=0; i< MAX_TOPIC; i++) {
-        if(strcmp(name,topics.topicArray[i].name) == 0){
-            printf("Topic find at %d.\n", i);
-            enter_critical_region_topic(i);
-            char * toDelete = topics.topicArray[i].name;
-            free(toDelete);
-            char *a = malloc(sizeof("\0"));
-            strcpy(a,"\0");
-            topics.topicArray[i].name = a;
-            topicsSize--;
-            printf("Topic deleted.\n");
-            leave_critical_region_topic(i);
-            return true;
-        }
-    }
-    printf("Topic size is %d, max amount reached.\n",topicsSize);
-    printf("Unable to delete userTopic %s.\n", name);
-    return false;
-}
-
-
-/**
- * @Precondition Is into a critical region
- */
-void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation){
-    printf("Publishing into a user userTopic\n");
-    char *a = malloc(sizeof(msg));
-    strcpy(a,msg);
-    userTopic->messageContent[msgLocation] = a;
-    userTopic->read[msgLocation] = false;
-    printf("UserTopic created\n");
-}
-
-int doInit(){
-    int i = 0;
-    for(i = 0; i<MAX_USR; i++){
-        subscribers[i].pid_subscriber = INVALID_PID;
-        int j = 0;
-        for(j=0;j<MAX_TOPIC;j++){
-            UserTopic defaultUserTopic = {.id = INVALID_ID,.messageContent = {[0 ... MAX_MSG-1] = "\0"},.name="\0",.read = {[0 ... MAX_MSG-1] = true}, .toString=toStringUserTopic};
-            subscribers[i].userTopic[j] = defaultUserTopic;
-        }
-        subscribers[i].toString = toStringSubscriber;
-    }
-    for(i = 0; i<MAX_USR; i++){
-        publishers[i].pid_publisher= INVALID_PID;
-        int j = 0;
-        for(j = 0; j<MAX_TOPIC; j++){
-            char * name = malloc(sizeof("\0"));
-            strcpy(name,"\0");
-            char * old = publishers[j].topicNames[j];
-            free(old);
-            publishers[i].topicNames[j] = name;
-        }
-        publishers[i].toString = toStringPublisher;
-    }
-    for(i = 0; i<MAX_TOPIC; i++){
-        topics.topicArray[i] = defaultTopic;
-    }
-    initDone = true;
-}
-
-Topic * findTopicByName(const char * name){
-    int i = 0;
-    for(i=0;i<MAX_TOPIC;i++) {
-        if (strcmp(topics.topicArray[i].name, name) == 0) {
-            return &topics.topicArray[i];
-        }
-    }
-    return NULL;
-}
-
-/**
- * @Precondition Is into a critical region
- */
-int publish_into_all_user_topic(const char * topicName, const char * msg){
-    printf("Publishing into all user userTopic.\n");
-    int i = 0;
-    Topic  * topic = findTopicByName(topicName);
-    if(topic == NULL){
-        return TOPIC_NOT_FOUND;
-    }
-    int slot = findAndLockAvailableSlot(topic);
-    if(slot == INVALID_POSITION){
-        return NO_SLOT_AVAILABLE;
-    }
-    for(i=0;i<MAX_USR;i++){
-        int j = 0;
-        for(j=0;j<MAX_TOPIC;j++){
-            if(subscribers[i].userTopic[j].id == topic->id) {
-                publish_into_user_topic(&subscribers[i].userTopic[j], msg, slot);
-            }
-        }
-    }
-    printf("End of publish into all user userTopic.\n");
-    return slot;
-}
-
-int findAndLockAvailableSlot(Topic * topic){
-    int i = 0;
-    for(i = 0;i<MAX_MSG;i++){
-        if(topic->msgSlotAvailable[i] == true){
-            topic->msgSlotAvailable[i] = false;
-            return i;
-        }
-    }
-    return INVALID_POSITION;
-}
-
-int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher){
-    printf("Start publishing message into a userTopic.\n");
-    if(userIsRegistredAsPublisher(topicName, publisher)){
-        Topic * topic = findTopicByName(topicName);
-        enter_critical_region_topic(topic->id);
-        int ret = publish_into_all_user_topic(topic->name,msg);
-        leave_critical_region_topic(topic->id);
-        printf("End of publishing message into a userTopic.\n");
-        if(ret >= 0 && ret <MAX_MSG){
-            return MSG_PUBLISHED;
-        }else{
-            return MSG_NOT_PUBLISHED_SLOTS_FULL;
-        }
-    }else{
-        printf("End of publishing message into a userTopic with failure.\n");
-        return USR_NOT_REGISTRED_AS_PUBLISHER;
-    }
-}
-
-bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher){
-    int i = 0;
-    int j = 0;
-    for(i = 0; i<MAX_USR; i++){
-        if(publishers[i].pid_publisher == publisher->pid_publisher){
-            for(j = 0; j<MAX_TOPIC; j++) {
-                if (strcmp(publishers[i].topicNames[j], topicName) == 0) {
-                    puts("User registred as publisher");
-                    return true;
-                }
-            }
-        }
-    }
-    puts("User not registred as publisher");
-    return false;
-}
-
-
-
-int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic){
-    int i = 0;
-    for(i =0;i<MAX_TOPIC; i++){
-        if(subscriber->userTopic[i].id == topic->id){
-            return i;
-        }
-    }
-    return INVALID_POSITION;
-}
-
-bool checkAllRetrieved(const Topic * topic, const int slot){
-    int i = 0;
-    for(i=0;i<MAX_USR;i++){
-        if(subscribers[i].pid_subscriber != INVALID_POSITION){
-            if(subscribers[i].userTopic->id!= INVALID_POSITION) {
-                if (subscribers[i].userTopic[topic->id].read[slot] != true) {
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
-}
-
-char * readMessage(UserTopic *userTopic){
-    int i = 0;
-    for(i = 0; i<MAX_MSG ; i++){
-        if(userTopic->read[i] == false){
-            userTopic->read[i] = true;
-            char * msg = malloc(sizeof(userTopic->messageContent[i]));
-            strcpy(msg,userTopic->messageContent[i]);
-            free(userTopic->messageContent[i]);
-            char * erased = malloc(sizeof("\0"));
-            strcpy(erased,"\0");
-            userTopic->messageContent[i]= erased;
-            return msg;
-        }
-    }
-}
-
-Subscriber * findSubscriberByPid(const pid_t pid) {
-    int i = 0;
-    for(i =0;i<MAX_USR; i++){
-        if(subscribers[i].pid_subscriber == pid){
-            return &subscribers[i];
-        }
-    }
-    return NULL;
-}
-
-char * retrieve_msg_of_topic(const pid_t pid, const char * topicName) {
-    Topic *topic = findTopicByName(topicName);
-    Subscriber * subscriber = findSubscriberByPid(pid);
-    if (topic != NULL && subscriber != NULL) {
-        wait_read_critical_region_topic(topic->id);
-        int positionOfTheTopic = findUserTopicPosition(subscriber, topic);
-        char *msg = readMessage(&subscriber->userTopic[positionOfTheTopic]);
-        int i = 0;
-        for(i=0;i<MAX_MSG;i++){
-            if(checkAllRetrieved(topic,i)){
-                puts("new slot available");
-                topic->msgSlotAvailable[i] = true;
-            }
-        }
-        return msg;
-    } else {
-        return NULL;
-    }
-}
-
 int topic_publisher(const char * name, pid_t current_pid){
     int j, g;
     Topic  * topic = findTopicByName(name);
@@ -631,12 +529,138 @@ int topic_publisher(const char * name, pid_t current_pid){
     return FAIL_TO_REGISTER;
 }
 
-Publisher * findPublisherById(pid_t id){
+bool subscribe_to_topic(const char * name, pid_t id){
+    int returnValue = is_ID_set(name,id);
+    printf("returnValue is %d\n.",returnValue);
+    if(returnValue != INVALID_POSITION)
+        return true;
+    returnValue  = subscribers_init(name,id);
+    printf("returnValue is %d\n.",returnValue);
+    if(returnValue != INVALID_POSITION)
+        return true;
+    return false;
+}
+
+
+/**
+ * @Precondition Is into a critical region
+ */
+void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation){
+    printf("Publishing into a user userTopic\n");
+    char *a = malloc(sizeof(msg));
+    strcpy(a,msg);
+    userTopic->messageContent[msgLocation] = a;
+    userTopic->read[msgLocation] = false;
+    printf("UserTopic created\n");
+}
+
+/**
+ * @Precondition Is into a critical region
+ */
+int publish_into_all_user_topic(const char * topicName, const char * msg){
+    printf("Publishing into all user userTopic.\n");
     int i = 0;
+    Topic  * topic = findTopicByName(topicName);
+    if(topic == NULL){
+        return TOPIC_NOT_FOUND;
+    }
+    int slot = findAndLockAvailableSlot(topic);
+    if(slot == INVALID_POSITION){
+        return NO_SLOT_AVAILABLE;
+    }
     for(i=0;i<MAX_USR;i++){
-        if(publishers[i].pid_publisher == id){
-            return &publishers[i];
+        int j = 0;
+        for(j=0;j<MAX_TOPIC;j++){
+            if(subscribers[i].userTopic[j].id == topic->id) {
+                publish_into_user_topic(&subscribers[i].userTopic[j], msg, slot);
+            }
         }
     }
-    return NULL;
+    printf("End of publish into all user userTopic.\n");
+    return slot;
 }
+
+int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher){
+    printf("Start publishing message into a userTopic.\n");
+    if(userIsRegistredAsPublisher(topicName, publisher)){
+        Topic * topic = findTopicByName(topicName);
+        enter_critical_region_topic(topic->id);
+        int ret = publish_into_all_user_topic(topic->name,msg);
+        leave_critical_region_topic(topic->id);
+        printf("End of publishing message into a userTopic.\n");
+        if(ret >= 0 && ret <MAX_MSG){
+            return MSG_PUBLISHED;
+        }else{
+            return MSG_NOT_PUBLISHED_SLOTS_FULL;
+        }
+    }else{
+        printf("End of publishing message into a userTopic with failure.\n");
+        return USR_NOT_REGISTRED_AS_PUBLISHER;
+    }
+}
+
+char * retrieve_msg_of_topic(const pid_t pid, const char * topicName) {
+    Topic *topic = findTopicByName(topicName);
+    Subscriber * subscriber = findSubscriberByPid(pid);
+    if (topic != NULL && subscriber != NULL) {
+        wait_read_critical_region_topic(topic->id);
+        int positionOfTheTopic = findUserTopicPosition(subscriber, topic);
+        char *msg = readMessage(&subscriber->userTopic[positionOfTheTopic]);
+        int i = 0;
+        for(i=0;i<MAX_MSG;i++){
+            if(checkAllRetrieved(topic,i)){
+                puts("new slot available");
+                topic->msgSlotAvailable[i] = true;
+            }
+        }
+        return msg;
+    } else {
+        return NULL;
+    }
+}
+
+char * readMessage(UserTopic *userTopic){
+    int i = 0;
+    for(i = 0; i<MAX_MSG ; i++){
+        if(userTopic->read[i] == false){
+            userTopic->read[i] = true;
+            char * msg = malloc(sizeof(userTopic->messageContent[i]));
+            strcpy(msg,userTopic->messageContent[i]);
+            free(userTopic->messageContent[i]);
+            char * erased = malloc(sizeof("\0"));
+            strcpy(erased,"\0");
+            userTopic->messageContent[i]= erased;
+            return msg;
+        }
+    }
+}
+
+/**
+ * @Precondition Is into a critical region
+ */
+bool delete_topic(const char * name){
+    printf("Topic deletion \n");
+    int i = 0;
+    for(i=0; i< MAX_TOPIC; i++) {
+        if(strcmp(name,topics.topicArray[i].name) == 0){
+            printf("Topic find at %d.\n", i);
+            enter_critical_region_topic(i);
+            char * toDelete = topics.topicArray[i].name;
+            free(toDelete);
+            char *a = malloc(sizeof("\0"));
+            strcpy(a,"\0");
+            topics.topicArray[i].name = a;
+            topicsSize--;
+            printf("Topic deleted.\n");
+            leave_critical_region_topic(i);
+            return true;
+        }
+    }
+    printf("Topic size is %d, max amount reached.\n",topicsSize);
+    printf("Unable to delete userTopic %s.\n", name);
+    return false;
+}
+
+/********* END OF CORE METHODS **********/
+
+/********* END OF INTERNAL METHODS **********/

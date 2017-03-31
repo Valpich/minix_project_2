@@ -85,6 +85,8 @@ typedef struct Topics{
     void (*toString)(const struct Topics *);  /* Pointer to the display function of a Topics */
 }Topics;
 
+/********* BEGIN OF TO STRING FUNCTIONS **********/
+
 void toStringUserTopic(const UserTopic * userTopic);
 
 void toStringSubscriber(const Subscriber * subscriber);
@@ -94,6 +96,30 @@ void toStringPublisher(const Publisher * publisher);
 void toStringTopic(const Topic * topic);
 
 void toStringTopics(const Topics * topic);
+
+void toStringAllPublisher(const Publisher publisher[]);
+
+void toStringAllSubscriber(const Subscriber subscriber[]);
+
+/********* END OF TO STRING FUNCTIONS **********/
+
+/********* BEGIN OF SEMAPHORE METHODS **********/
+
+void down(semaphore * s);
+
+void up(semaphore * s);
+
+void enter_critical_region_topic(int topic_id);
+
+void leave_critical_region_topic(int topic_id);
+
+void checkNotDown(semaphore * s);
+
+void wait_read_critical_region_topic(int topic_id);
+
+/********* END OF SEMAPHORE METHODS **********/
+
+/********* BEGIN OF SYSTEM CALL METHODS **********/
 
 int do_topic_lookup(void);
 
@@ -107,38 +133,57 @@ int do_topic_publish(void);
 
 int do_retrieve(void);
 
+/********* END OF SYSTEM CALL METHODS **********/
+
+/********* BEGIN OF INTERNAL METHODS **********/
+
+/********* BEGIN OF UTILITY METHODS **********/
+
+int doInit();
+
+Topic * findTopicByName(const char * name);
+
+Subscriber * findSubscriberByPid(const pid_t pid);
+
+Publisher * findPublisherById(pid_t id);
+
+int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);
+
+int findAndLockAvailableSlot(Topic * topic);
+
+bool checkAllRetrieved(const Topic * topic, const int slot);
+
+bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher);
+
 int is_ID_set(const char * name, pid_t id);
 
 int subscribers_init(const char * name, pid_t id);
 
-bool subscribe_to_topic(const char * name, pid_t id);
+/********* END OF UTILITY METHODS **********/
+
+/********* BEGIN OF CORE METHODS **********/
+
+void lookup();
 
 bool create_topic(const char * name);
 
-bool delete_topic(const char * name);
+int topic_publisher(const char * name, pid_t current_pid);
 
-Topic * findTopicByName(const char * name);
+bool subscribe_to_topic(const char * name, pid_t id);
 
 void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation);
 
 int publish_into_all_user_topic(const char * topicName, const char * msg);
 
-int findAndLockAvailableSlot(Topic * topic);
-
-int doInit();
-
 int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher);
-
-bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher);
-
-int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);
-
-bool checkAllRetrieved(const Topic * topic, const int slot);
-
-Subscriber * findSubscriberByPid(const pid_t pid);
 
 char * retrieve_msg_of_topic(const pid_t pid, const char * topicName);
 
-int topic_publisher(const char * name, pid_t current_pid);
+char * readMessage(UserTopic *userTopic);
+
+bool delete_topic(const char * name);
+/********* END OF CORE METHODS **********/
+
+/********* END OF INTERNAL METHODS **********/
 
 #endif /** PROJECT_2_SYST_CALL_H */

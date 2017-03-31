@@ -96,7 +96,10 @@ int main(){
       do {
         puts("----------- Continue(y/n) :");
         scanf("%c",&choice);
-        printf("scanned %c",choice);
+        int resultYes = strcmp(&yes,&choice);
+        printf("result cmp yes %d\n",resultYes);
+        int resultNo = strcmp(&noyes,&choice);
+        printf("result cmp no %d\n",resultNo);
         puts("");
         clean_stdin();
       }while(strcmp(&yes,&choice) != 0 || strcmp(&no,&choice) != 0);

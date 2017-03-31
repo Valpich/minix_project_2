@@ -97,8 +97,8 @@ int main(){
         printf("scanned %c",choice);
         puts("");
         clean_stdin();
-      }while (strcmp('y',choice) == 0 || strcmp('n',choice) == 0);
-    }while(strcmp('y',choice) == 0);
+      }while (strcmp('y',&choice) == 0 || strcmp('n',&choice) == 0);
+    }while(strcmp('y',&choice) == 0);
 
   return 0;
 }

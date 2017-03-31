@@ -15,8 +15,7 @@
 #include <sys/wait.h>
 
 #define MINIX 0
-#include <lib.h>
-#include <minix/type.h>
+#include <glo.h>
 #ifdef  MINIX
 
 #endif

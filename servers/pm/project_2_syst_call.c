@@ -270,7 +270,7 @@ int do_retrieve(void){
         printf("%s", msg);
         return DO_RETRIEVE_SUCCESS_RETURN;
     }else {
-        printf("Noting to retrieve", msg);
+        printf("Noting to retrieve");
         return DO_RETRIEVE_FAILURE_RETURN;
     }
 }

@@ -16,6 +16,7 @@
 
 #define MINIX 0
 #include <lib.h>
+#include <minix/type.h>
 #ifdef  MINIX
 
 #endif

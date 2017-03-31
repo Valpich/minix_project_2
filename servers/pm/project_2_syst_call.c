@@ -262,8 +262,11 @@ int do_retrieve(void){
     }
     printf("do_retrieve\n");
     char * msg = NULL;
+    char *topic_name = NULL;
 #ifdef MINIX
-    msg = retrieve_msg_of_topic();
+    strcpy(topic_name,m_in.m3_ca1);
+    id=m_in.m1_i1;
+    msg = retrieve_msg_of_topic(topic_name,id);
 #endif
     if(msg != NULL){
         return DO_RETRIEVE_SUCCESS_RETURN;

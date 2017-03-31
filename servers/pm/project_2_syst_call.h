@@ -23,9 +23,10 @@
 #define MAX_TOPIC 10    /* Number of allowed topics for each topic */
 #define MAX_USR 30  /* Number of allowed user */
 #define TOPIC_NOT_FOUND -2
-#define NOT_SLOT_AVAILABLE -3
+#define NO_SLOT_AVAILABLE -3
 #define USR_NOT_REGISTRED_AS_PUBLISHER -4
 #define MSG_PUBLISHED 100
+#define MSG_NOT_PUBLISHED_SLOTS_FULL 101
 
 typedef int semaphore;  /* Define semaphore as a type */
 
@@ -115,5 +116,7 @@ int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);
 bool checkAllRetrieved(const Topic * topic);
 
 char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicName);
+
+int topic_publisher(const char * name, pid_t current_pid);
 
 #endif /** PROJECT_2_SYST_CALL_H */

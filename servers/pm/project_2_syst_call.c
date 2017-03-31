@@ -50,10 +50,11 @@ void toStringPublisher(const Publisher * publisher){
     if(publisher != NULL){
         printf("Publisher is:\npid: %d,", publisher->pid_publisher);
         int i = 0;
-        printf(" topics subscribed names: ");
-        for(i = 0; i<MAX_TOPIC ;i++){
+        printf(" topics publisher names: ");
+        for(i = 0; i<MAX_TOPIC-1 ;i++){
             printf("%s, ", publisher->topicNames[i]);
         }
+        printf("%s", publisher->topicNames[MAX_TOPIC-1]);
         printf(".\n");
     }else{
         printf("Publisher is NULL.\n");
@@ -62,11 +63,13 @@ void toStringPublisher(const Publisher * publisher){
 
 void toStringTopic(const Topic * topic){
     if(topic != NULL){
-        printf("Topic: name is %s, available slot are: ",  topic->name);
+        printf("Topic: name is %s, id is %d, available slot are: ", topic->name, topic->id);
         int i =0 ;
-        for(i = 0; i<MAX_TOPIC ;i++){
+        for(i = 0; i<MAX_MSG-1 ;i++){
             printf(" %d,",  topic->msgSlotAvailable[i]);
         }
+        printf(" %d",  topic->msgSlotAvailable[MAX_MSG-1]);
+        printf(".\n");
     }else{
         printf(" Topics is NULL.\n");
     }
@@ -318,6 +321,8 @@ bool create_topic(const char * name){
             }else if(strcmp("\0",topics.topicArray[i].name) == 0){
                 printf("Empty find at %d\n", i);
                 enter_critical_region_topic(i);
+                printf("Setting id.\n");
+                topics.topicArray[i].id = i;
                 printf("Setting name.\n");
                 char *a = malloc(sizeof(name));
                 strcpy(a,name);
@@ -406,8 +411,6 @@ int doInit(){
     for(i = 0; i<MAX_TOPIC; i++){
         topics.topicArray[i] = defaultTopic;
     }
-    toStringAllPublisher(publishers);
-    toStringAllSubscriber(subscribers);
 }
 
 Topic * findTopicByName(const char * name){
@@ -432,7 +435,7 @@ int publish_into_all_user_topic(const char * topicName, const char * msg){
     }
     int slot = findAndLockAvailableSlot(topic);
     if(slot == -1){
-        return NOT_SLOT_AVAILABLE;
+        return NO_SLOT_AVAILABLE;
     }
     for(i=0;i<MAX_USR;i++){
         int j = 0;
@@ -463,12 +466,15 @@ int publish_msg_into_topic(const char * topicName, const char * msg, const Publi
         puts("1");
         Topic * topic = findTopicByName(topicName);
         enter_critical_region_topic(topic->id);
-        publish_into_all_user_topic(topic->name,msg);
+        int ret = publish_into_all_user_topic(topic->name,msg);
         leave_critical_region_topic(topic->id);
         printf("End of publishing message into a userTopic.\n");
-        return MSG_PUBLISHED;
+        if(ret >= 0 && ret <MAX_MSG){
+            return MSG_PUBLISHED;
+        }else{
+            return MSG_NOT_PUBLISHED_SLOTS_FULL;
+        }
     }else{
-        puts("2");
         printf("End of publishing message into a userTopic with failure.\n");
         return USR_NOT_REGISTRED_AS_PUBLISHER;
     }
@@ -553,7 +559,6 @@ char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicNa
 
 int topic_publisher(const char * name, pid_t current_pid){
     int j, g;
-    
     Topic  * topic = findTopicByName(name);
     if(topic == NULL){
         printf("Please enter a valid topic name in order to be a publisher\n");

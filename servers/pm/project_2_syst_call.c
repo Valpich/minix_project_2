@@ -557,7 +557,6 @@ char * retrieve_msg_of_topic(const pid_t pid, const char * topicName) {
         wait_read_critical_region_topic(topic->id);
         int positionOfTheTopic = findUserTopicPosition(subscriber, topic);
         char *msg = readMessage(&subscriber->userTopic[positionOfTheTopic]);
-        subscriber->toString(subscriber);
         int i = 0;
         for(i=0;i<MAX_MSG;i++){
             if(checkAllRetrieved(topic,i)){

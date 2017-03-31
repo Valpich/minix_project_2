@@ -55,6 +55,7 @@ int main(){
         }else{
           puts("Topic not created");
         }
+        clean_stdin();
         continueResult = continueProgram();
       break;
       case 2:
@@ -68,6 +69,7 @@ int main(){
         puts("Enter the Topic you want to be register as a publisher:");
         scanf("%s",TopicName);
         topic_publisher(TopicName);
+        clean_stdin();
         continueResult = continueProgram();
       break;
       case 4:
@@ -76,6 +78,7 @@ int main(){
         puts("Enter the Topic you want to be register as a subscriber:");
         scanf("%s",TopicName);
         topic_subscriber(TopicName);
+        clean_stdin();
         continueResult = continueProgram();
       break;
       case 5:
@@ -94,6 +97,7 @@ int main(){
         puts("Enter the Content of your topic (max. 100 char):");
         scanf("%s", TopicContent);
         topic_publish(TopicName, TopicContent);
+        clean_stdin();
         continueResult = continueProgram();
       break;
       case 8:

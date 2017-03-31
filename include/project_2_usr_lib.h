@@ -1,5 +1,3 @@
-
-
 #include <sys/types.h>
 #include <lib.h>
 #include <unistd.h>

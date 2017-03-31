@@ -240,16 +240,13 @@ int do_topic_publish(void){
         doInit();
     }
     printf("do_topic_publish\n");
-    printf("Trying to publish the message: \"%s\" for the topic %s\n",m_in.m6_p1, m_in.m6_p2);
-    char *topic_name = malloc(sizeof(m_in.m6_p1));
-    char *topic_content = malloc(sizeof(m_in.m6_p2));
+    char *topic_name = m_in.m6_p1;
+    char *topic_content = m_in.m6_p2;
     int id,returnValue = INVALID_ID;
 #ifdef MINIX
-    strcpy(topic_name,m_in.m6_p1);
-    strcpy(topic_content,m_in.m6_p2);
     id=m_in.m1_i1;
     Publisher * publisher = findPublisherById(id);
-    printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, *topic_name);
+    printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, topic_name);
     returnValue = publish_msg_into_topic(topic_name, topic_content, publisher);
 #endif
     return returnValue;

@@ -24,9 +24,7 @@
 #include <minix/vm.h>
 #include <machine/archtypes.h>
 #include <lib.h>
-#ifdef  MINIX
 
-#endif
 #define MAX_MSG 5   /* Number of message for each topic */
 #define MAX_TOPIC 10    /* Number of allowed topics for each topic */
 #define MAX_USR 30  /* Number of allowed user */

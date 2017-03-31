@@ -1,5 +1,7 @@
 //#include "project_2_syst_call.h"
 #include "project_2_usr_lib.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int main(){
 
@@ -24,7 +26,7 @@ int main(){
     char c;
     do{
         printf("\n Enter your choice: ");
-    } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9)
+    } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9);
     switch (operationSelectedNumber) {
 
       case 1:

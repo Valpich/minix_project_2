@@ -3,22 +3,22 @@
 #define PROJECT_2_SYST_CALL_H
 
 #include <signal.h>
-
 #include <sys/resource.h>
 #include <sys/utsname.h>
-
 #include <string.h>
 #include <stdlib.h>
-
 #include <assert.h>
-
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
-
 #include <sys/wait.h>
 
+#define MINIX 0
+#include <lib.h>
+#ifdef  MINIX
+
+#endif
 #define MAX_MSG 5   /* Number of message for each topic */
 #define MAX_TOPIC 10    /* Number of allowed topics for each topic */
 #define MAX_USR 30  /* Number of allowed user */

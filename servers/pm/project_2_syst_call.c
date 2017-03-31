@@ -244,7 +244,7 @@ int do_topic_publish(void){
     int id,returnValue = INVALID_ID;
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);
-    strcpy(topic_content,m_in.m2_ca1);
+    strcpy(topic_content,m_in.m6_p1);
     id=m_in.m1_i1;
     Publisher * publisher = findPublisherById(id);
     returnValue = publish_msg_into_topic(topic_name, topic_content, publisher);
@@ -263,7 +263,7 @@ int do_retrieve(void){
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);
     id=m_in.m1_i1;
-    msg = retrieve_msg_of_topic(topic_name,id);
+    msg = retrieve_msg_of_topic(id, topic_name);
 #endif
     if(msg != NULL){
         return DO_RETRIEVE_SUCCESS_RETURN;

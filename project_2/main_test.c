@@ -28,7 +28,7 @@ int main(){
         printf("\nTOPIC CREATE\n");
         printf("Enter Topic Name: ");
         scanf("%s", TopicName);
-        if(topic_create(TopicName) == true){
+        if(topic_create(TopicName) == 1){
           printf("\nTopic created !\n");
         }else{
           printf("\nTopic not created\n");
@@ -42,14 +42,14 @@ int main(){
         printf("\nREGISTER AS PUBLISHER\n");
         topic_lookup();
         printf("Enter the Topic you want to be register as a publisher: ");
-        scanf("%s\n" TopicName);
+        scanf("%s\n",TopicName);
         topic_publisher(TopicName);
       break;
       case 4:
         printf("\nREGISTER AS SUBSCRIBER\n");
         topic_lookup();
         printf("Enter the Topic you want to be register as a subscriber: ");
-        scanf("%s\n" TopicName);
+        scanf("%s\n",TopicName);
         topic_subscriber(TopicName);
       break;
       case 5:

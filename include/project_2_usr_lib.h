@@ -63,8 +63,8 @@ int topic_subscriber(const char * name){
 
 int topic_publish(const char * name, const char * content){
     message m;
-    strcpy(m.m3_ca1,name);
-    m.m6_p1 = content;
+    m.m6_p1 = name;
+    m.m6_p2 = content;
     m.m1_i1=getpid();
     return ( _syscall(PM_PROC_NR,TOPIC_PUBLISH, &m) );
 }

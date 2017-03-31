@@ -270,7 +270,7 @@ int do_retrieve(void){
     msg = retrieve_msg_of_topic(id, topic_name);
 #endif
     if(msg != NULL){
-        printf("Message is %s\.", msg);
+        printf("Message is %s\n.", msg);
         return DO_RETRIEVE_SUCCESS_RETURN;
     }else {
         printf("Noting to retrieve.\n");

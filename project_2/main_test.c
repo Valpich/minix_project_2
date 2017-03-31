@@ -101,7 +101,7 @@ int main(){
         continueResult = continueProgram();
       break;
       case 8:
-        puts("RECEIVE");
+        puts("RETRIEVE");
         puts("Enter the Topic you want to be retrieve a message:");
         scanf("%s",TopicName);
         topic_retrieve(TopicName);

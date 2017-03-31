@@ -606,7 +606,13 @@ int publish_msg_into_topic(const char * topicName, const char * msg, const Publi
 
 char * retrieve_msg_of_topic(const pid_t user_pid, const char * topicName) {
     Topic *topic = findTopicByName(topicName);
+    if(topic == NULL){
+        puts("Topic not found");
+    }
     Subscriber * subscriber = findSubscriberByPid(user_pid);
+    if(subscriber == NULL){
+        puts("Subscriber not found");
+    }
     if (topic != NULL && subscriber != NULL) {
         wait_read_critical_region_topic(topic->id);
         int positionOfTheTopic = findUserTopicPosition(subscriber, topic);

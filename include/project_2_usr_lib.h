@@ -42,7 +42,7 @@ int topic_publish(const char * name, const char * content){
     message m2;
     a=getpid();
     strcpy(m.m3_ca1,name);
-    strcpy(m2.m2_ca1,content)
+    strcpy(m2.m6_p1,content)
     m.m1_i1=a;
     return ( _syscall(PM_PROC_NR,TOPIC_PUBLISH, &m) );
 }

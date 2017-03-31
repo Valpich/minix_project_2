@@ -185,7 +185,7 @@ int do_topic_create(void){
         doInit();
     }
     printf("do_topic_create\n");
-    char *topic_name = NULL;
+    char *topic_name = malloc(sizeof(m_in.m3_ca1));
     bool success = false;
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);
@@ -204,7 +204,7 @@ int do_topic_publisher(void){
         doInit();
     }
     printf("do_topic_publisher\n");
-    char *topic_name = NULL;
+    char *topic_name = malloc(sizeof(m_in.m3_ca1));
     int id = INVALID_ID;
     int returnValue = DO_TOPIC_PUBLISHER_FAILURE_RETURN;
 #ifdef MINIX
@@ -220,7 +220,7 @@ int do_topic_subscriber(void){
         doInit();
     }
     printf("do_topic_subscriber\n");
-    char *topic_name = NULL;
+    char *topic_name = malloc(sizeof(m_in.m3_ca1));
     int id = INVALID_ID;
     bool success = false;
 #ifdef MINIX
@@ -240,8 +240,8 @@ int do_topic_publish(void){
         doInit();
     }
     printf("do_topic_publish\n");
-    char *topic_name = NULL;
-    char *topic_content = NULL;
+    char *topic_name = malloc(sizeof(m_in.m3_ca1));
+    char *topic_content = malloc(sizeof(m_in.m6_p1));
     int id,returnValue = INVALID_ID;
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);
@@ -259,7 +259,7 @@ int do_retrieve(void){
     }
     printf("do_retrieve\n");
     char * msg = NULL;
-    char *topic_name = NULL;
+    char *topic_name = malloc(sizeof(m_in.m3_ca1));
     int id = INVALID_ID;
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);

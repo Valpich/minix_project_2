@@ -9,14 +9,26 @@ int clean_stdin(){
     return 1;
 }
 
+int continueProgram(){
+    char choice;
+    int resultYes;
+    int resultNo;
+    do {
+        clean_stdin();
+        puts("----------- Continue(y/n) :");
+        c = getchar();
+        resultYes = c == 'y' ? 1 : 0;
+        resultNo = c == 'n' ? 1 : 0;
+    }while(!(resultYes == 1 || resultNo == 1));
+    return resultYes == 1 ? 1 : 0;
+}
+
 int main(){
 
   int operationSelectedNumber;
   char TopicName[100];
   char TopicContent[100];
-  char choice;
-  int resultYes;
-  int resultNo;
+  int continueResult = 1;
   do{
     printf("\n----------- Welcome -----------");
     printf("\n1. Create new TOPIC (TopicCreate)");
@@ -34,7 +46,6 @@ int main(){
         puts("Enter your choice:");
     } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9);
     switch (operationSelectedNumber) {
-
       case 1:
         printf("\nTOPIC CREATE\n");
         printf("Enter Topic Name: ");
@@ -44,10 +55,12 @@ int main(){
         }else{
           printf("\nTopic not created\n");
         }
+        continueResult = continueProgram();
       break;
       case 2:
         printf("\nTOPIC LOOKUP\n");
         topic_lookup();
+        continueResult = continueProgram();
       break;
       case 3:
         printf("\nREGISTER AS PUBLISHER\n");
@@ -55,6 +68,7 @@ int main(){
         printf("Enter the Topic you want to be register as a publisher: \n");
         scanf("%s",TopicName);
         topic_publisher(TopicName);
+        continueResult = continueProgram();
       break;
       case 4:
         printf("\nREGISTER AS SUBSCRIBER\n");
@@ -63,42 +77,39 @@ int main(){
         puts("");
         scanf("%s",TopicName);
         topic_subscriber(TopicName);
+        continueResult = continueProgram();
       break;
       case 5:
         printf("\nPUBLISHER DETAILS\n");
+        continueResult = continueProgram();
       break;
       case 6:
         printf("\nSUBSCRIBER DETAILS\n");
+        continueResult = continueProgram();
       break;
       case 7:
         printf("\nPUBLISH\n");
         topic_lookup();
         printf("Enter the Topic you want to publish into:");
         scanf("%s", TopicName);
-        clean_stdin();
         printf("Enter the Content of your topic (max. 100 char): ");
         scanf("%s", TopicContent);
         topic_publish(TopicName, TopicContent);
+        continueResult = continueProgram();
       break;
       case 8:
         printf("\nRECEIVE\n");
         topic_retrieve();
+        continueResult = continueProgram();
       break;
       case 9:
         printf("\nCLEAR\n");
+        continueResult = continueProgram();
       break;
       default:
         printf("\nDefault Operation selected\n");
+        break;
       }
-      do {
-        clean_stdin();
-        puts("----------- Continue(y/n) :");
-        c = getchar();
-        puts("");
-        resultYes = c == 'y' ? 1 : 0;
-        resultNo = c == 'n' ? 1 : 0;
-      }while(!(resultYes == 1 || resultNo == 1));
-    }while(resultYes == 1);
-
+    }while(continueResult == 1);
   return 0;
 }

@@ -102,7 +102,10 @@ int main(){
       break;
       case 8:
         puts("RECEIVE");
-        topic_retrieve();
+        puts("Enter the Topic you want to be register as a publisher:");
+        scanf("%s",TopicName);
+        topic_retrieve(TopicName);
+        clean_stdin();
         continueResult = continueProgram();
       break;
       case 9:

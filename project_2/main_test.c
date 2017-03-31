@@ -11,7 +11,6 @@ int clean_stdin(){
 int main(){
 
   int operationSelectedNumber;
-  char choice;
   char TopicName[100];
   char TopicContent[100];
 
@@ -38,7 +37,7 @@ int main(){
         printf("\nTOPIC CREATE\n");
         printf("Enter Topic Name: ");
         scanf("%s", TopicName);
-        if(topic_create(TopicName) == 1){
+        if(topic_create(TopicName) == DO_TOPIC_CREATE_SUCCESS_RETURN){
           printf("\nTopic created !\n");
         }else{
           printf("\nTopic not created\n");
@@ -62,6 +61,7 @@ int main(){
         printf("Enter the Topic you want to be register as a subscriber: ");
         puts("");
         scanf("%s\n",TopicName);
+        clean_stdin();
         topic_subscriber(TopicName);
       break;
       case 5:
@@ -75,8 +75,10 @@ int main(){
         topic_lookup();
         printf("Enter the Topic you want to publish into:");
         scanf("%s\n", TopicName);
+        clean_stdin();
         printf("Enter the Content of your topic (max. 100 char): ");
         scanf("%s\n", TopicContent);
+        clean_stdin();
         topic_publish(TopicName, TopicContent);
       break;
       case 8:
@@ -91,7 +93,14 @@ int main(){
       }
 
       printf("\n\n----------- Continue(y/n) :");
-      scanf(" %c",&choice);
+      puts();
+      char choice = scanf(" %c",&choice);;
+      while (choice != 'y' || choice != 'n') {
+        printf("\n\n----------- Continue(y/n) :");
+        puts();
+        scanf(" %c",&choice);
+        clean_stdin();
+      }
     }while(choice=='y');
 
   return 0;

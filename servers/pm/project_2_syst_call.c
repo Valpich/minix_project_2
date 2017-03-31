@@ -186,11 +186,12 @@ int do_topic_create(void){
     }
     printf("do_topic_create\n");
     char *topic_name = NULL;
+    bool success = false;
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);
 #endif
     printf("received value : %s \n",topic_name);
-    bool success = create_topic(topic_name);
+    //success = create_topic(topic_name);
     if(success){
         return DO_TOPIC_CREATE_SUCCESS_RETURN;
     }else {
@@ -279,8 +280,7 @@ int do_retrieve(void){
 /********* BEGIN OF UTILITY METHODS **********/
 
 int doInit(){
-    int i =0;
-    puts("DOING INIT");
+    int i = 0;
     for(i = 0; i<MAX_USR; i++){
         subscribers[i].pid_subscriber = INVALID_PID;
         int j = 0;
@@ -306,7 +306,6 @@ int doInit(){
         topics.topicArray[i] = defaultTopic;
     }
     initDone = true;
-    puts("INIT DONE");
     return EXIT_SUCCESS;
 }
 

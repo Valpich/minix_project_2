@@ -15,6 +15,8 @@ int main(){
   char TopicName[100];
   char TopicContent[100];
   char choice;
+  int resultYes;
+  int resultNo;
   do{
     printf("\n----------- Welcome -----------");
     printf("\n1. Create new TOPIC (TopicCreate)");
@@ -95,8 +97,8 @@ int main(){
         puts("----------- Continue(y/n) :");
         c = getchar();
         puts("");
-        int resultYes = c == 'y' ? 1 : 0;
-        int resultNo = c == 'n' ? 1 : 0;
+        resultYes = c == 'y' ? 1 : 0;
+        resultNo = c == 'n' ? 1 : 0;
         clean_stdin();
       }while(!(resultYes == 1 || resultNo == 1));
     }while(resultYes == 1);

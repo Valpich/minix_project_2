@@ -15,9 +15,9 @@ int continueProgram(){
     int resultNo;
     char c;
     do {
-        clean_stdin();
         puts("----------- Continue(y/n) :");
         c = getchar();
+        clean_stdin();
         resultYes = c == 'y' ? 1 : 0;
         resultNo = c == 'n' ? 1 : 0;
     }while(!(resultYes == 1 || resultNo == 1));

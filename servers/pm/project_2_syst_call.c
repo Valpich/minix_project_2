@@ -165,46 +165,56 @@ int do_topic_lookup(void){
 }
 
 int do_topic_create(void){
-  printf("do_topic_create\n");
-  char *topic_name = NULL;
-  int Return_value;
-  strcpy(topic_name,m_in.m3_ca1);
-  printf("received value : %s \n",topic_name);
-  Return_value = create_topic(topic_name);
-  return Return_value;
+    printf("do_topic_create\n");
+    char *topic_name = NULL;
+    int Return_value;
+#ifdef MINIX
+    strcpy(topic_name,m_in.m3_ca1);
+#endif
+    printf("received value : %s \n",topic_name);
+    Return_value = create_topic(topic_name);
+    return Return_value;
 }
 
 int do_topic_publisher(void){
-  printf("do_topic_publisher\n");
-  char *topic_name = NULL;
-  int id,Return_val;
-  strcpy(name_p,m_in.m3_ca1);
-  id=m_in.m1_i1;
-  Return_value = topic_publisher(topic_name, id);
-  return Return_value;
+    printf("do_topic_publisher\n");
+    char *topic_name = NULL;
+    int id,Return_val;
+#ifdef MINIX
+    strcpy(name_p,m_in.m3_ca1);
+    id=m_in.m1_i1;
+    Return_value = topic_publisher(topic_name, id);
+    return Return_value;
+#endif
+    return 1;
 }
 
 int do_topic_subscriber(void){
-  printf("do_topic_subscriber\n");
-  char *topic_name = NULL;
-  int id,Return_val;
-  strcpy(topic_name,m_in.m3_ca1);
-  id=m_in.m1_i1;
-  Return_value = subscribe_to_topic(topic_name, id);
-  return Return_value;
+    printf("do_topic_subscriber\n");
+    char *topic_name = NULL;
+    int id,Return_val;
+#ifdef MINIX
+    strcpy(topic_name,m_in.m3_ca1);
+    id=m_in.m1_i1;
+    Return_value = subscribe_to_topic(topic_name, id);
+    return Return_value;
+#endif
 }
 
 int do_topic_publish(void){
-  printf("do_topic_publish\n");
-  char *topic_name = NULL;
-  char *topic_content = NULL;
-  int id,Return_val;
-  strcpy(topic_name,m_in.m3_ca1);
-  strcpy(topic_content,m_in.m2_ca1);
-  id=m_in.m1_i1;
-  Publisher * publisher = findPublisherById(id);
-  Return_val = publish_msg_into_topic(topic_name, topic_content, publisher);
-  return Return_val;
+    printf("do_topic_publish\n");
+    char *topic_name = NULL;
+    char *topic_content = NULL;
+    int id,Return_val;
+#ifdef MINIX
+    strcpy(topic_name,m_in.m3_ca1);
+    strcpy(topic_content,m_in.m2_ca1);
+    id=m_in.m1_i1;
+    Publisher * publisher = findPublisherById(id);
+    Return_val = publish_msg_into_topic(topic_name, topic_content, publisher);
+    return Return_val;
+#endif
+    return 1;
 }
 
 int do_retrieve(void){
@@ -217,9 +227,9 @@ int do_retrieve(void){
 // PUBLISHER TO TEST
 
 int is_ID_set(const char * name, pid_t id){
-
+    
     int i = 0;
-
+    
     for(i=0 ; i<MAX_USR ; i++){
         // find ID
         if( id == subscribers[i].pid_subscriber){
@@ -543,20 +553,20 @@ char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicNa
 
 int topic_publisher(const char * name, pid_t current_pid){
     int j, g;
-
+    
     Topic  * topic = findTopicByName(name);
     if(topic == NULL){
         printf("Please enter a valid topic name in order to be a publisher\n");
         return 12;
     }else{
         for(j = 0 ; j < MAX_USR ; j++){
-            if(publisher[j].pid_publisher == -1 || publisher[j].pid_publisher == current_pid){
+            if(publishers[j].pid_publisher == -1 || publishers[j].pid_publisher == current_pid){
                 for(g = 0 ; g < MAX_TOPIC ; g++) {
-                    if (strcmp(publisher[j].topicNames[g], "\0") == 0) {
+                    if (strcmp(publishers[j].topicNames[g], "\0") == 0) {
                         printf("j: %d, g: %d\n", j, g);
-                        publisher[j].pid_publisher = current_pid;
-                        publisher[j].topicNames[g] = name;
-                        printf("Publisher OK: %s\n", publisher[j].topicNames[g]);
+                        publishers[j].pid_publisher = current_pid;
+                        publishers[j].topicNames[g] = name;
+                        printf("Publisher OK: %s\n", publishers[j].topicNames[g]);
                         return 1;
                     }
                 }
@@ -568,11 +578,11 @@ int topic_publisher(const char * name, pid_t current_pid){
 }
 
 Publisher * findPublisherById(pid_t id){
-  int i = 0;
-  for(i=0;i,MAX_USR;i++){
-    if(publisher[i].pid_publisher == id){
-      return publisher[i];
+    int i = 0;
+    for(i=0;i,MAX_USR;i++){
+        if(publishers[i].pid_publisher == id){
+            return &publishers[i];
+        }
     }
-  }
-  return NULL;
+    return NULL;
 }

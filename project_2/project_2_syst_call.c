@@ -121,26 +121,46 @@ int do_topic_lookup(void){
 }
 
 int do_topic_create(void){
-    printf("coucou\n");
-    
-    // create_topic(name);
-    
-    char *name = NULL;
-    // strcpy(name,m_in.m3_ca1);
-    printf("received value : %s \n",name);
-    return 2;
+  printf("do_topic_create\n");
+  char *topic_name = NULL;
+  int Return_value;
+  strcpy(topic_name,m_in.m3_ca1);
+  printf("received value : %s \n",topic_name);
+  Return_value = create_topic(topic_name);
+  return Return_value;
 }
 
 int do_topic_publisher(void){
-    return 3;
+  printf("do_topic_publisher\n");
+  char *topic_name = NULL;
+  int id,Return_val;
+  strcpy(name_p,m_in.m3_ca1);
+  id=m_in.m1_i1;
+  Return_value = topic_publisher(topic_name, id);
+  return Return_value;
 }
 
 int do_topic_subscriber(void){
-    return 4;
+  printf("do_topic_subscriber\n");
+  char *topic_name = NULL;
+  int id,Return_val;
+  strcpy(topic_name,m_in.m3_ca1);
+  id=m_in.m1_i1;
+  Return_value = subscribe_to_topic(topic_name, id);
+  return Return_value;
 }
 
 int do_topic_publish(void){
-    return 5;
+  printf("do_topic_publish\n");
+  char *topic_name = NULL;
+  char *topic_content = NULL;
+  int id,Return_val;
+  strcpy(topic_name,m_in.m3_ca1);
+  strcpy(topic_content,m_in.m2_ca1);
+  id=m_in.m1_i1;
+  Publisher * publisher = findPublisherById(id);
+  Return_val = publish_msg_into_topic(topic_name, topic_content, publisher);
+  return Return_val;
 }
 
 int do_retrieve(void){
@@ -172,10 +192,10 @@ for(i=0 ; i<MAX_USR ; i++){
 					strcpy(a,"\0");
 					subscribers[i].topic[j].name = a;
 					subscribers[i].topic[j].id = j;
-					// return 1 -> ok 
+					// return 1 -> ok
 					return 1;
-				 }    
-			}          
+				 }
+			}
 		}
 	}
 // mean could not find ID
@@ -210,13 +230,14 @@ for(i=0 ; i<MAX_USR ; i++){
 					subscribers[i].topic[j].id = j;
 					// 1-> ok
 					return 1;
-				 }    
-			} 
+				 }
+			}
 	}
 }
 // could not find -1
-return 0;   
+return 0;
 }
+
 bool subscribe_to_topic(const char * name, pid_t id){
 
 	int retourValue = is_ID_set(name,id);
@@ -225,7 +246,7 @@ bool subscribe_to_topic(const char * name, pid_t id){
 	retourValue  = subscribers_init(name,id);
 	if(retourValue != 0)
 		return true;
- 
+
 	return false;
 }
 
@@ -369,6 +390,16 @@ Topic * findTopicByName(const char * name){
     return NULL;
 }
 
+Publisher * findPublisherById(pid_t id){
+  int i = 0;
+  for(i=0;i,MAX_USR;i++){
+    if(publisher[i].pid_publisher == id){
+      return publisher[i];
+    }
+  }
+  return NULL;
+}
+
 /**
  * @Precondition Is into a critical region
  */
@@ -440,4 +471,30 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
     }
     puts("User not registred as published");
     return false;
+}
+
+int topic_publisher(const char * name, pid_t current_pid){
+    int j, g;
+
+    Topic  * topic = findTopicByName(name);
+    if(topic == NULL){
+        printf("Please enter a valid topic name in order to be a publisher\n");
+        return 12;
+    }else{
+        for(j = 0 ; j < MAX_USR ; j++){
+            if(publisher[j].pid_publisher == -1 || publisher[j].pid_publisher == current_pid){
+                for(g = 0 ; g < MAX_TOPIC ; g++) {
+                    if (strcmp(publisher[j].topicNames[g], "\0") == 0) {
+                        printf("j: %d, g: %d\n", j, g);
+                        publisher[j].pid_publisher = current_pid;
+                        publisher[j].topicNames[g] = name;
+                        printf("Publisher OK: %s\n", publisher[j].topicNames[g]);
+                        return 1;
+                    }
+                }
+                printf("There is no space available for you to be a publisher for this topic\n");
+                return 0;
+            }
+        }
+    }
 }

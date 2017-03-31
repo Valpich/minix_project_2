@@ -13,6 +13,7 @@ int continueProgram(){
     char choice;
     int resultYes;
     int resultNo;
+    char c;
     do {
         clean_stdin();
         puts("----------- Continue(y/n) :");
@@ -24,7 +25,6 @@ int continueProgram(){
 }
 
 int main(){
-
   int operationSelectedNumber;
   char TopicName[100];
   char TopicContent[100];
@@ -41,7 +41,6 @@ int main(){
     printf("\n8. Receive Message (Retrieve)");
     printf("\n9. Clear Buffer");
     puts("");
-    char c;
     do{
         puts("Enter your choice:");
     } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9);

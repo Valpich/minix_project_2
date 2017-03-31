@@ -102,7 +102,7 @@ int main(){
       break;
       case 8:
         puts("RECEIVE");
-        puts("Enter the Topic you want to be register as a publisher:");
+        puts("Enter the Topic you want to be retrieve a message:");
         scanf("%s",TopicName);
         topic_retrieve(TopicName);
         clean_stdin();

@@ -267,8 +267,10 @@ int do_retrieve(void){
     msg = retrieve_msg_of_topic(id, topic_name);
 #endif
     if(msg != NULL){
+        printf("%s", msg);
         return DO_RETRIEVE_SUCCESS_RETURN;
     }else {
+        printf("Noting to retrieve", msg);
         return DO_RETRIEVE_FAILURE_RETURN;
     }
 }
@@ -612,7 +614,6 @@ char * retrieve_msg_of_topic(const pid_t user_pid, const char * topicName) {
         int i = 0;
         for(i=0;i<MAX_MSG;i++){
             if(checkAllRetrieved(topic,i)){
-                puts("new slot available");
                 topic->msgSlotAvailable[i] = true;
             }
         }

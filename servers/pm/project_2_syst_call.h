@@ -41,7 +41,7 @@ typedef struct UserTopic{
 
 typedef struct Subscriber{
     pid_t pid_subscriber;   /* Subscriber pid_t */
-    struct UserTopic topic[MAX_TOPIC];   /* Topics subscribed */
+    struct UserTopic userTopic[MAX_TOPIC];   /* Topics subscribed */
     void (*toString)(const struct Subscriber *);    /* Pointer to the display function of a Subscriber */
 }Subscriber;
 
@@ -60,7 +60,7 @@ typedef struct Topic{
 
 typedef struct Topics{
     Topic topicArray[MAX_TOPIC];    /* List of all topics */
-    bool canBeRemoved[MAX_TOPIC];    /* If a topic can be removed */
+    bool canBeRemoved[MAX_TOPIC];    /* If a Topic can be removed */
     void (*toString)(const struct Topics *);  /* Pointer to the display function of a Topics */
 }Topics;
 

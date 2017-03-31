@@ -17,7 +17,7 @@ int main(){
 
   do{
     printf("\n----------- Welcome -----------");
-    printf("\n1. Create new TOPIC (TopicCreate) ");
+    printf("\n1. Create new TOPIC (TopicCreate)");
     printf("\n2. Show Available Topics (TopicLookup)");
     printf("\n3. Register as Publisher (TopicPublisher)");
     printf("\n4. Register as Subscriber (TopicSubscriber)");

@@ -36,11 +36,13 @@ int topic_subscriber(const char * name){
     return ( _syscall(PM_PROC_NR,TOPIC_SUBSCRIBER, &m) );
 }
 
-int topic_publish(const char * name){
+int topic_publish(const char * name, const char * content){
     int a;
     message m;
+    message m2;
     a=getpid();
     strcpy(m.m3_ca1,name);
+    strcpy(m2.m2_ca1,content)
     m.m1_i1=a;
     return ( _syscall(PM_PROC_NR,TOPIC_PUBLISH, &m) );
 }
@@ -49,7 +51,6 @@ int topic_retrieve(void){
     message m;
     m.m1_i1=getpid();
     //	printf("\nAbout to recieve message...!!");
-    
+
     return ( _syscall(PM_PROC_NR,TOPIC_RETRIEVE, &m) );
 }
-

@@ -1,5 +1,5 @@
 //#include "project_2_syst_call.h"
-#include "/usr/src/include/project_2_usr_lib.sh"
+#include "project_2_usr_lib.h"
 
 int main(){
 

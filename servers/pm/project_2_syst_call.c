@@ -279,7 +279,7 @@ int do_retrieve(void){
 /********* BEGIN OF UTILITY METHODS **********/
 
 int doInit(){
-    int i = 0;
+    puts("DOING INIT");
     for(i = 0; i<MAX_USR; i++){
         subscribers[i].pid_subscriber = INVALID_PID;
         int j = 0;
@@ -305,6 +305,7 @@ int doInit(){
         topics.topicArray[i] = defaultTopic;
     }
     initDone = true;
+    puts("INIT DONE");
     return EXIT_SUCCESS;
 }
 

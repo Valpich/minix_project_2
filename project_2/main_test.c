@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int clean_stdin(){
+    while (getchar()!='\n');
+    return 1;
+}
+
 int main(){
 
   int operationSelectedNumber;

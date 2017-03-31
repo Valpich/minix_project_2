@@ -15,8 +15,8 @@ int main(){
   char TopicName[100];
   char TopicContent[100];
   char choice;
-  char yes = 'y';
-  char no = 'n';
+  char yes = 'y\n';
+  char no = 'n\n';
   do{
     printf("\n----------- Welcome -----------");
     printf("\n1. Create new TOPIC (TopicCreate)");

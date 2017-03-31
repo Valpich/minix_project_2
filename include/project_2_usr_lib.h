@@ -63,8 +63,10 @@ int topic_subscriber(const char * name){
 
 int topic_publish(const char * name, const char * content){
     message m;
+    printf("Name is %s, content is %s\n",name, content);
     strcpy(m.m6_p1, name);
     strcpy(m.m6_p2, content);
+    printf("m6_p1 is %s, m6_p2 is %s\n",m6_p1, m6_p2);
     m.m1_i1=getpid();
     return ( _syscall(PM_PROC_NR,TOPIC_PUBLISH, &m) );
 }

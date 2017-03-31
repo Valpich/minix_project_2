@@ -52,18 +52,16 @@ int main(){
       case 3:
         printf("\nREGISTER AS PUBLISHER\n");
         topic_lookup();
-        printf("Enter the Topic you want to be register as a publisher: ");
-        puts("");
-        scanf("%s\n",TopicName);
+        printf("Enter the Topic you want to be register as a publisher: \n");
+        scanf("%s",TopicName);
         topic_publisher(TopicName);
       break;
       case 4:
         printf("\nREGISTER AS SUBSCRIBER\n");
         topic_lookup();
-        printf("Enter the Topic you want to be register as a subscriber: ");
+        printf("Enter the Topic you want to be register as a subscriber: \n");
         puts("");
-        scanf("%s\n",TopicName);
-        clean_stdin();
+        scanf("%s",TopicName);
         topic_subscriber(TopicName);
       break;
       case 5:
@@ -76,11 +74,10 @@ int main(){
         printf("\nPUBLISH\n");
         topic_lookup();
         printf("Enter the Topic you want to publish into:");
-        scanf("%s\n", TopicName);
+        scanf("%s", TopicName);
         clean_stdin();
         printf("Enter the Content of your topic (max. 100 char): ");
-        scanf("%s\n", TopicContent);
-        clean_stdin();
+        scanf("%s", TopicContent);
         topic_publish(TopicName, TopicContent);
       break;
       case 8:
@@ -94,12 +91,12 @@ int main(){
         printf("\nDefault Operation selected\n");
       }
       do {
+        clean_stdin();
         puts("----------- Continue(y/n) :");
         c = getchar();
         puts("");
         resultYes = c == 'y' ? 1 : 0;
         resultNo = c == 'n' ? 1 : 0;
-        clean_stdin();
       }while(!(resultYes == 1 || resultNo == 1));
     }while(resultYes == 1);
 

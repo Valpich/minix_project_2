@@ -49,7 +49,6 @@
 #define DO_TOPIC_LOOKUP_SUCCESS_RETURN 200
 #define DO_TOPIC_CREATE_SUCCESS_RETURN 201
 #define DO_TOPIC_CREATE_FAILURE_RETURN -201
-#define DO_TOPIC_PUBLISHER_SUCCESS_RETURN 202
 #define DO_TOPIC_PUBLISHER_FAILURE_RETURN -202
 #define DO_TOPIC_SUBSCRIBER_SUCCESS_RETURN 203
 #define DO_TOPIC_SUBSCRIBER_FAILURE_RETURN -203
@@ -151,9 +150,9 @@ int doInit();
 
 Topic * findTopicByName(const char * name);
 
-Subscriber * findSubscriberByPid(const pid_t pid);
+Subscriber * findSubscriberByPid(const pid_t user_pid);
 
-Publisher * findPublisherById(pid_t id);
+Publisher * findPublisherById(pid_t user_pid);
 
 int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);
 
@@ -163,9 +162,9 @@ bool checkAllRetrieved(const Topic * topic, const int slot);
 
 bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher);
 
-int is_ID_set(const char * name, pid_t id);
+int is_ID_set(const char * name, pid_t user_pid);
 
-int subscribers_init(const char * name, pid_t id);
+int subscribers_init(const char * name, pid_t user_pid);
 
 /********* END OF UTILITY METHODS **********/
 
@@ -175,9 +174,9 @@ void lookup();
 
 bool create_topic(const char * name);
 
-int topic_publisher(const char * name, pid_t current_pid);
+int topic_publisher(const char * name, pid_t user_pid);
 
-bool subscribe_to_topic(const char * name, pid_t id);
+bool subscribe_to_topic(const char * name, pid_t user_pid);
 
 void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation);
 
@@ -185,7 +184,7 @@ int publish_into_all_user_topic(const char * topicName, const char * msg);
 
 int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher);
 
-char * retrieve_msg_of_topic(const pid_t pid, const char * topicName);
+char * retrieve_msg_of_topic(const pid_t user_pid, const char * topicName);
 
 char * readMessage(UserTopic *userTopic);
 

@@ -205,17 +205,13 @@ int do_topic_publisher(void){
     printf("do_topic_publisher\n");
     char *topic_name = NULL;
     int id = INVALID_ID;
-    bool success = false;
+    int returnValue = DO_TOPIC_PUBLISHER_FAILURE_RETURN;
 #ifdef MINIX
-    strcpy(name_p,m_in.m3_ca1);
+    strcpy(topic_name,m_in.m3_ca1);
     id=m_in.m1_i1;
-    success = topic_publisher(topic_name, id);
+    returnValue = topic_publisher(topic_name, id);
 #endif
-    if(success){
-        return DO_TOPIC_PUBLISHER_SUCCESS_RETURN;
-    }else {
-        return DO_TOPIC_PUBLISHER_FAILURE_RETURN;
-    }
+    return returnValue;
 }
 
 int do_topic_subscriber(void){
@@ -263,6 +259,7 @@ int do_retrieve(void){
     printf("do_retrieve\n");
     char * msg = NULL;
     char *topic_name = NULL;
+    int id = INVALID_ID;
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);
     id=m_in.m1_i1;
@@ -322,20 +319,20 @@ Topic * findTopicByName(const char * name){
 }
 
 
-Subscriber * findSubscriberByPid(const pid_t pid) {
+Subscriber * findSubscriberByPid(const pid_t user_pid) {
     int i = 0;
     for(i =0;i<MAX_USR; i++){
-        if(subscribers[i].pid_subscriber == pid){
+        if(subscribers[i].pid_subscriber == user_pid){
             return &subscribers[i];
         }
     }
     return NULL;
 }
 
-Publisher * findPublisherById(pid_t id){
+Publisher * findPublisherById(pid_t user_pid){
     int i = 0;
     for(i=0;i<MAX_USR;i++){
-        if(publishers[i].pid_publisher == id){
+        if(publishers[i].pid_publisher == user_pid){
             return &publishers[i];
         }
     }
@@ -394,11 +391,11 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
     return false;
 }
 
-int is_ID_set(const char * name, pid_t id){
+int is_ID_set(const char * name, pid_t user_pid){
     int i = 0;
     for(i=0 ; i<MAX_USR ; i++){
         // find ID
-        if( id == subscribers[i].pid_subscriber){
+        if( user_pid == subscribers[i].pid_subscriber){
             // look through its UserTopic to find the name
             int j = 0;
             for(j=0;j<MAX_TOPIC; j++){
@@ -426,14 +423,14 @@ int is_ID_set(const char * name, pid_t id){
 }
 
 // used if the id was not found in the subscribers list -> not subscribed yet to any userTopic
-int subscribers_init(const char * name, pid_t id){
+int subscribers_init(const char * name, pid_t user_pid){
     int i = 0;
     // means the id was not found  in the subscribers -> first  init
     for(i=0 ; i<MAX_USR ; i++){
         // Look for the first available size
         if(INVALID_PID == subscribers[i].pid_subscriber){
             // assign correct value to pid
-            subscribers[i].pid_subscriber =  id;
+            subscribers[i].pid_subscriber =  user_pid;
             // look through its UserTopic to find the name
             int j = 0;
             // means was not found the first time -> first empty
@@ -502,7 +499,7 @@ bool create_topic(const char * name){
     }
 }
 
-int topic_publisher(const char * name, pid_t current_pid){
+int topic_publisher(const char * name, pid_t user_pid){
     int j, g;
     Topic  * topic = findTopicByName(name);
     if(topic == NULL){
@@ -510,11 +507,11 @@ int topic_publisher(const char * name, pid_t current_pid){
         return INVALID_TOPIC_NAME;
     }else{
         for(j = 0 ; j < MAX_USR ; j++){
-            if(publishers[j].pid_publisher == INVALID_PID || publishers[j].pid_publisher == current_pid){
+            if(publishers[j].pid_publisher == INVALID_PID || publishers[j].pid_publisher == user_pid){
                 for(g = 0 ; g < MAX_TOPIC ; g++) {
                     if (strcmp(publishers[j].topicNames[g], "\0") == 0) {
                         printf("j: %d, g: %d\n", j, g);
-                        publishers[j].pid_publisher = current_pid;
+                        publishers[j].pid_publisher = user_pid;
                         char * topicName = malloc(sizeof(name));
                         strcpy(topicName,name);
                         char * old = publishers[j].topicNames[g];
@@ -532,12 +529,12 @@ int topic_publisher(const char * name, pid_t current_pid){
     return FAIL_TO_REGISTER;
 }
 
-bool subscribe_to_topic(const char * name, pid_t id){
-    int returnValue = is_ID_set(name,id);
+bool subscribe_to_topic(const char * name, pid_t user_pid){
+    int returnValue = is_ID_set(name,user_pid);
     printf("returnValue is %d\n.",returnValue);
     if(returnValue != INVALID_POSITION)
         return true;
-    returnValue  = subscribers_init(name,id);
+    returnValue  = subscribers_init(name,user_pid);
     printf("returnValue is %d\n.",returnValue);
     if(returnValue != INVALID_POSITION)
         return true;
@@ -602,9 +599,9 @@ int publish_msg_into_topic(const char * topicName, const char * msg, const Publi
     }
 }
 
-char * retrieve_msg_of_topic(const pid_t pid, const char * topicName) {
+char * retrieve_msg_of_topic(const pid_t user_pid, const char * topicName) {
     Topic *topic = findTopicByName(topicName);
-    Subscriber * subscriber = findSubscriberByPid(pid);
+    Subscriber * subscriber = findSubscriberByPid(user_pid);
     if (topic != NULL && subscriber != NULL) {
         wait_read_critical_region_topic(topic->id);
         int positionOfTheTopic = findUserTopicPosition(subscriber, topic);

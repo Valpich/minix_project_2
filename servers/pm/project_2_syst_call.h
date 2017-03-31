@@ -2,20 +2,28 @@
 #ifndef PROJECT_2_SYST_CALL_H
 #define PROJECT_2_SYST_CALL_H
 
-#include <signal.h>
 #include <sys/resource.h>
 #include <sys/utsname.h>
 #include <string.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/wait.h>
 
 #define MINIX 0
-#include <glo.h>
+#include "pm.h"
+#include "mproc.h"
+#include "param.h"
+#include <sys/svrctl.h>
+#include <minix/callnr.h>
+#include <minix/com.h>
+#include <minix/config.h>
+#include <minix/sysinfo.h>
+#include <minix/type.h>
+#include <minix/vm.h>
+#include <machine/archtypes.h>
+#include <lib.h>
 #ifdef  MINIX
 
 #endif

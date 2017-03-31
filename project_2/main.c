@@ -26,10 +26,6 @@ int test2(){
 }
 
 int test3(){
-    publish_into_all_user_topic("Hi", "Hello");
-}
-
-int test4(){
     Publisher publisher;
     publisher.pid_publisher= getpid();
     int j = 0;
@@ -43,14 +39,47 @@ int test4(){
     printf("ret is %d.",ret);
 }
 
-int test5(){
-    int retour;
-    retour = subscribe_to_topic("aaa",3);
-
-
+int test4(){
+    doInit();
+    Publisher publisher;
+    publisher.pid_publisher= getpid();
+    int j = 0;
+    for(j = 0; j<MAX_TOPIC; j++){
+        char * name = malloc(sizeof("\0"));
+        strcpy(name,"\0");
+        publisher.topicNames[j] = name;
+    }
+    publisher.toString = toStringPublisher;
+    create_topic("Hi");
+    int retour = subscribe_to_topic("Hi",getpid());
+    printf("retour subscribe is %d.\n",retour);
+    int result = topic_publisher("Hi", getpid());
+    printf("retour publisher is %d.\n",result);
+    int ret = publish_msg_into_topic("Hi", "Hello",&publisher);
+    printf("ret publish is %d.\n",ret);
+    ret = publish_msg_into_topic("Hi", "You",&publisher);
+    printf("ret publish is %d.\n",ret);
+    ret = publish_msg_into_topic("Hi", "!",&publisher);
+    printf("ret publish is %d.\n",ret);
+    ret = publish_msg_into_topic("Hi", "Stop",&publisher);
+    printf("ret publish is %d.\n",ret);
+    ret = publish_msg_into_topic("Hi", "Please",&publisher);
+    printf("ret publish is %d.\n",ret);
+    ret = publish_msg_into_topic("Hi", "Full",&publisher);
+    printf("ret publish is %d.\n",ret);
+    char * msg = retrieve_msg_of_topic(getpid(),"Hi");
+    printf("message retrieved is %s.\n",msg);
+    ret = publish_msg_into_topic("Hi", "Full",&publisher);
+    printf("ret publish is %d.\n",ret);
+    msg = retrieve_msg_of_topic(getpid(),"Hi");
+    printf("message retrieved is %s.\n",msg);
+    msg = retrieve_msg_of_topic(getpid(),"Hi");
+    printf("message retrieved is %s.\n",msg);
 }
 
+
 int main() {
-    test5();
+    test4();
+    
     return 0;
 }

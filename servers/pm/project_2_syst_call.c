@@ -17,7 +17,7 @@ void toStringUserTopic(const UserTopic * userTopic){
         for(i = 0; i<MAX_MSG ;i++){
             printf("%s, ", userTopic->messageContent[i]);
         }
-        printf(" read: ");
+        printf("read: ");
         for(i = 0; i<MAX_MSG ;i++){
             printf("%d", userTopic->read[i]);
             if(i<MAX_MSG-1){
@@ -249,7 +249,7 @@ int is_ID_set(const char * name, pid_t id){
             for(j=0;j<MAX_TOPIC; j++){
                 if(-1 == subscribers[i].userTopic[j].id){
                     char *a = malloc(sizeof(name));
-                    strcpy(a,"\0");
+                    strcpy(a,name);
                     subscribers[i].userTopic[j].name = a;
                     subscribers[i].userTopic[j].id = j;
                     // return 1 -> ok
@@ -277,7 +277,7 @@ int subscribers_init(const char * name, pid_t id){
             for(j=0;j<MAX_TOPIC; j++){
                 if(-1 == subscribers[j].userTopic[j].id){
                     char *a = malloc(sizeof(name));
-                    strcpy(a,"\0");
+                    strcpy(a,name);
                     subscribers[i].userTopic[j].name = a;
                     subscribers[i].userTopic[j].id = j;
                     // 1-> ok
@@ -311,7 +311,6 @@ bool subscribe_to_topic(const char * name, pid_t id){
  */
 bool create_topic(const char * name){
     printf("Topic creation \n");
-    topics.toString(&topics);
     if(topicsSize < MAX_TOPIC){
         int i = 0;
         for(i=0; i< MAX_TOPIC; i++) {
@@ -404,6 +403,8 @@ int doInit(){
         for(j = 0; j<MAX_TOPIC; j++){
             char * name = malloc(sizeof("\0"));
             strcpy(name,"\0");
+            char * old = publishers[j].topicNames[j];
+            free(old);
             publishers[i].topicNames[j] = name;
         }
         publishers[i].toString = toStringPublisher;
@@ -502,20 +503,21 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
 int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic){
     int i = 0;
     for(i =0;i<MAX_TOPIC; i++){
-        if(strcmp(subscriber->userTopic[i].name, topic->name)){
+        if(subscriber->userTopic[i].id == topic->id){
             return i;
         }
     }
     return -1;
 }
 
-bool checkAllRetrieved(const Topic * topic){
+bool checkAllRetrieved(const Topic * topic, const int slot){
     int i = 0;
-    int j = 0;
     for(i=0;i<MAX_USR;i++){
-        for(j=0;j<MAX_MSG;j++){
-            if(subscribers[i].userTopic[topic->id].read[j] == true){
-                return false;
+        if(subscribers[i].pid_subscriber != -1){
+            if(subscribers[i].userTopic->id!= -1) {
+                if (subscribers[i].userTopic[topic->id].read[slot] != true) {
+                    return false;
+                }
             }
         }
     }
@@ -527,9 +529,9 @@ char * readMessage(UserTopic *userTopic){
     for(i = 0; i<MAX_MSG ; i++){
         if(userTopic->read[i] == false){
             userTopic->read[i] = true;
-            char * msg = malloc(sizeof(userTopic->messageContent));
-            strcpy(msg,userTopic->messageContent);
-            free(userTopic->messageContent);
+            char * msg = malloc(sizeof(userTopic->messageContent[i]));
+            strcpy(msg,userTopic->messageContent[i]);
+            free(userTopic->messageContent[i]);
             char * erased = malloc(sizeof("\0"));
             strcpy(erased,"\0");
             userTopic->messageContent[i]= erased;
@@ -538,16 +540,28 @@ char * readMessage(UserTopic *userTopic){
     }
 }
 
-char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicName) {
+Subscriber * findSubscriberByPid(const pid_t pid) {
+    int i = 0;
+    for(i =0;i<MAX_USR; i++){
+        if(subscribers[i].pid_subscriber == pid){
+            return &subscribers[i];
+        }
+    }
+    return NULL;
+}
+
+char * retrieve_msg_of_topic(const pid_t pid, const char * topicName) {
     Topic *topic = findTopicByName(topicName);
-    if (topic != NULL) {
+    Subscriber * subscriber = findSubscriberByPid(pid);
+    if (topic != NULL && subscriber != NULL) {
         wait_read_critical_region_topic(topic->id);
         int positionOfTheTopic = findUserTopicPosition(subscriber, topic);
-        UserTopic userTopic = subscriber->userTopic[positionOfTheTopic];
-        char *msg = readMessage(&userTopic);
-        if (checkAllRetrieved(topic)) {
-            int i = 0;
-            for (i = 0; i < MAX_MSG; i++) {
+        char *msg = readMessage(&subscriber->userTopic[positionOfTheTopic]);
+        subscriber->toString(subscriber);
+        int i = 0;
+        for(i=0;i<MAX_MSG;i++){
+            if(checkAllRetrieved(topic,i)){
+                puts("new slot available");
                 topic->msgSlotAvailable[i] = true;
             }
         }
@@ -570,7 +584,11 @@ int topic_publisher(const char * name, pid_t current_pid){
                     if (strcmp(publishers[j].topicNames[g], "\0") == 0) {
                         printf("j: %d, g: %d\n", j, g);
                         publishers[j].pid_publisher = current_pid;
-                        publishers[j].topicNames[g] = name;
+                        char * topicName = malloc(sizeof(name));
+                        strcpy(topicName,name);
+                        char * old = publishers[j].topicNames[g];
+                        free(old);
+                        publishers[j].topicNames[g] = topicName;
                         printf("Publisher OK: %s\n", publishers[j].topicNames[g]);
                         return 1;
                     }

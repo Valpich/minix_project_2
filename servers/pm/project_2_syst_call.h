@@ -113,9 +113,11 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
 
 int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);
 
-bool checkAllRetrieved(const Topic * topic);
+bool checkAllRetrieved(const Topic * topic, const int slot);
 
-char * retrieve_msg_of_topic(const Subscriber * subscriber, const char * topicName);
+Subscriber * findSubscriberByPid(const pid_t pid);
+
+char * retrieve_msg_of_topic(const pid_t pid, const char * topicName);
 
 int topic_publisher(const char * name, pid_t current_pid);
 

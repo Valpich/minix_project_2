@@ -13,7 +13,7 @@ int main(){
   int operationSelectedNumber;
   char TopicName[100];
   char TopicContent[100];
-
+  char choice;
   do{
     printf("\n----------- Welcome -----------");
     printf("\n1. Create new TOPIC (TopicCreate)");
@@ -94,7 +94,7 @@ int main(){
 
       printf("\n\n----------- Continue(y/n) :");
       puts();
-      char choice = scanf(" %c",&choice);;
+    choice = scanf(" %c",&choice);;
       while (choice != 'y' || choice != 'n') {
         printf("\n\n----------- Continue(y/n) :");
         puts();

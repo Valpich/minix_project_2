@@ -15,8 +15,6 @@ int main(){
   char TopicName[100];
   char TopicContent[100];
   char choice;
-  char * yes = "y";
-  char * no = "n";
   do{
     printf("\n----------- Welcome -----------");
     printf("\n1. Create new TOPIC (TopicCreate)");
@@ -95,15 +93,11 @@ int main(){
       }
       do {
         puts("----------- Continue(y/n) :");
-        scanf("%c%c",&choice);
-        int resultYes = strcmp(yes,&choice);
-        printf("result cmp yes %d\n",resultYes);
-        int resultNo = strcmp(no,&choice);
-        printf("result cmp no %d\n",resultNo);
+        c = getchar();
         puts("");
         clean_stdin();
-      }while(strcmp(yes,&choice) != 0 || strcmp(no,&choice) != 0);
-    }while(strcmp(yes,&choice) == 0);
+      }while(!(resultYes == 1 || resultYes == 1));
+    }while(resultYes == 1);
 
   return 0;
 }

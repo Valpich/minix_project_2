@@ -98,7 +98,7 @@ int main(){
         scanf("%c",&choice);
         int resultYes = strcmp(&yes,&choice);
         printf("result cmp yes %d\n",resultYes);
-        int resultNo = strcmp(&noyes,&choice);
+        int resultNo = strcmp(&no,&choice);
         printf("result cmp no %d\n",resultNo);
         puts("");
         clean_stdin();

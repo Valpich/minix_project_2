@@ -20,8 +20,11 @@ int main(){
     printf("\n8. Receive Message (Retrieve)");
     printf("\n9. Clear Buffer");
     printf("\n Enter your choice: ");
-    scanf("%d", &operationSelectedNumber);
-
+    puts("");
+    char c;
+    do{
+        printf("\n Enter your choice: ");
+    } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9)
     switch (operationSelectedNumber) {
 
       case 1:
@@ -42,6 +45,7 @@ int main(){
         printf("\nREGISTER AS PUBLISHER\n");
         topic_lookup();
         printf("Enter the Topic you want to be register as a publisher: ");
+        puts("");
         scanf("%s\n",TopicName);
         topic_publisher(TopicName);
       break;
@@ -49,6 +53,7 @@ int main(){
         printf("\nREGISTER AS SUBSCRIBER\n");
         topic_lookup();
         printf("Enter the Topic you want to be register as a subscriber: ");
+        puts("");
         scanf("%s\n",TopicName);
         topic_subscriber(TopicName);
       break;

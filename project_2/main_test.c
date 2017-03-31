@@ -95,8 +95,10 @@ int main(){
         puts("----------- Continue(y/n) :");
         c = getchar();
         puts("");
+        int resultYes = c == 'y' ? 1 : 0;
+        int resultNo = c == 'n' ? 1 : 0;
         clean_stdin();
-      }while(!(resultYes == 1 || resultYes == 1));
+      }while(!(resultYes == 1 || resultNo == 1));
     }while(resultYes == 1);
 
   return 0;

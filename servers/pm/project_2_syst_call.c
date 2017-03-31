@@ -241,7 +241,7 @@ int do_topic_publish(void){
     }
     printf("do_topic_publish\n");
     char *topic_name = malloc(sizeof(m_in.m6_p1));
-    char *topic_content = malloc(sizeof(m_in.m6_p2));
+    char *topic_content = malloc(sizeof(ipm_in.m6_p2));
     int id,returnValue = INVALID_ID;
 #ifdef MINIX
     strcpy(topic_name,m_in.m6_p1);

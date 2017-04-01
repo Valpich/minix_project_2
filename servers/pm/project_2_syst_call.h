@@ -57,6 +57,10 @@
 #define DO_TOPIC_SUBSCRIBER_FAILURE_RETURN -203
 #define DO_RETRIEVE_SUCCESS_RETURN 204
 #define DO_RETRIEVE_FAILURE_RETURN -204
+#define DO_PRINT_SUBSCRIBERS_SUCCESS_RETURN 205
+#define DO_PRINT_PUBLISHERS_SUCCESS_RETURN 206
+#define DO_TOPIC_DELETE_SUCCESS_RETURN 207
+#define DO_TOPIC_DELETE_FAILURE_RETURN -207
 
 typedef int semaphore;  /* Define semaphore as a type */
 
@@ -193,7 +197,9 @@ char * readMessage(UserTopic *userTopic);
 
 bool delete_topic(const char * name);
 
-void printAllPublisher();
+void printAllPublishers();
+
+void printAllSubscribers();
 
 /********* END OF CORE METHODS **********/
 

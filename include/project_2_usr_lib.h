@@ -31,6 +31,10 @@
 #define DO_TOPIC_SUBSCRIBER_FAILURE_RETURN -203
 #define DO_RETRIEVE_SUCCESS_RETURN 204
 #define DO_RETRIEVE_FAILURE_RETURN -204
+#define DO_PRINT_SUBSCRIBERS_SUCCESS_RETURN 205
+#define DO_PRINT_PUBLISHERS_SUCCESS_RETURN 206
+#define DO_TOPIC_DELETE_SUCCESS_RETURN 207
+#define DO_TOPIC_DELETE_FAILURE_RETURN -207
 
 int topic_lookup(void){
     message m;
@@ -71,6 +75,22 @@ int topic_publish(const char * name, const char * content){
 }
 
 int topic_retrieve(const char * name){
+    message m;
+    strcpy(m.m3_ca1,name);
+    m.m1_i1=getpid();
+    return ( _syscall(PM_PROC_NR,TOPIC_RETRIEVE, &m) );
+}
+
+int print_all_subscribers(void){
+    message m;
+    return ( _syscall(PM_PROC_NR,TOPIC_LOOKUP, &m) );
+}
+
+int print_all_publishers(void){
+    message m;
+    return ( _syscall(PM_PROC_NR,TOPIC_LOOKUP, &m) );
+}
+int topic_delete(const char * name){
     message m;
     strcpy(m.m3_ca1,name);
     m.m1_i1=getpid();

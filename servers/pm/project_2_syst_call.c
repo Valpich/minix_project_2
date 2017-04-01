@@ -190,7 +190,6 @@ int do_topic_create(void){
 #ifdef MINIX
     strcpy(topic_name,m_in.m3_ca1);
 #endif
-    printf("received value : %s \n",topic_name);
     success = create_topic(topic_name);
     if(success){
         return DO_TOPIC_CREATE_SUCCESS_RETURN;
@@ -252,7 +251,6 @@ int do_topic_publish(void){
     printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, topic_name);
     returnValue = publish_msg_into_topic(topic_name, topic_content, publisher);
 #endif
-    toStringData();
     return returnValue;
 }
 
@@ -279,6 +277,34 @@ int do_retrieve(void){
     }
 }
 
+int do_print_subscribers(void){
+    printAllSubscribers();
+    return DO_PRINT_SUBSCRIBERS_SUCCESS_RETURN;
+}
+
+int do_print_publishers(void){
+    printAllPublishers();
+    return DO_PRINT_PUBLISHERS_SUCCESS_RETURN;
+}
+
+int do_topic_delete(void){
+    if(initDone == false){
+        doInit();
+    }
+    printf("do_topic_delete\n");
+    char *topic_name = malloc(sizeof(m_in.m3_ca1));
+    bool success = false;
+#ifdef MINIX
+    strcpy(topic_name,m_in.m3_ca1);
+#endif
+    success = delete_topic(topic_name);
+    if(success){
+        return DO_TOPIC_DELETE_SUCCESS_RETURN;
+    }else {
+        return DO_TOPIC_DELETE_FAILURE_RETURN;
+    }
+    return DO_PRINT_PUBLISHERS_SUCCESS_RETURN;
+}
 /********* END OF SYSTEM CALL METHODS **********/
 
 /********* BEGIN OF INTERNAL METHODS **********/
@@ -662,11 +688,20 @@ bool delete_topic(const char * name){
     return false;
 }
 
-void printAllPublisher(){
+void printAllPublishers(){
     int i =0;
     for(i=0;i<MAX_USR;i++){
         if(publishers[i].pid_publisher != INVALID_PID){
             publishers[i].toString(&publishers[i]);
+        }
+    }
+}
+
+void printAllSubscribers(){
+    int i =0;
+    for(i=0;i<MAX_USR;i++){
+        if(subscribers[i].pid_subscriber != INVALID_PID){
+            subscribers[i].toString(&subscribers[i]);
         }
     }
 }
@@ -677,15 +712,8 @@ void printAllPublisher(){
 /********* BEGIN OF DEBUG METHODS **********/
 
 void toStringData(){
-    int i = 0;
-    for(i = 0; i<MAX_USR; i++){
-        if(subscribers[i].pid_subscriber != INVALID_PID){
-            subscribers[i].toString(&subscribers[i]);
-        }
-        if(publishers[i].pid_publisher != INVALID_PID){
-            publishers[i].toString(&publishers[i]);
-        }
-    }
+    printAllPublishers();
+    printAllSubscribers();
 }
 
 /********* END OF DEBUG METHODS **********/

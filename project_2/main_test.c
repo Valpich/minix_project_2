@@ -92,6 +92,7 @@ int main(){
       break;
       case 8:
         puts("RETRIEVE");
+        topic_lookup();
         puts("Enter the Topic you want to be retrieve a message:");
         scanf("%[^\n]%*c", topicName);;
         topic_retrieve(topicName);
@@ -99,6 +100,10 @@ int main(){
       break;
       case 9:
         puts("CLEAR");
+        topic_lookup();
+        topic_lookup();
+        puts("Enter the Topic you want to delete! This may result");
+        scanf("%[^\n]%*c", topicName);;
         continueResult = continueProgram();
       break;
       default:

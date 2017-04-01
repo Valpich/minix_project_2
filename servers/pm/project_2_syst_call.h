@@ -151,11 +151,11 @@ int do_retrieve(void);
 
 int doInit();
 
-Topic * findTopicByName(const char * name);
+Topic * findTopicByName(const char * user_pid);
 
-Subscriber * findSubscriberByPid(const pid_t pid);
+Subscriber * findSubscriberByPid(const pid_t user_pid);
 
-Publisher * findPublisherById(pid_t id);
+Publisher * findPublisherById(pid_t user_pid);
 
 int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);
 
@@ -165,9 +165,9 @@ bool checkAllRetrieved(const Topic * topic, const int slot);
 
 bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher);
 
-int is_ID_set(const char * name, pid_t id);
+int is_ID_set(const char * name, pid_t user_pid);
 
-int subscribers_init(const char * name, pid_t id);
+int subscribers_init(const char * name, pid_t user_pid);
 
 /********* END OF UTILITY METHODS **********/
 
@@ -177,7 +177,7 @@ void lookup();
 
 bool create_topic(const char * name);
 
-int topic_publisher(const char * name, pid_t current_pid);
+int topic_publisher(const char * name, pid_t user_pid);
 
 bool subscribe_to_topic(const char * name, pid_t user_pid);
 

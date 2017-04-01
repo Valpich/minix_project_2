@@ -83,16 +83,16 @@ int topic_retrieve(const char * name){
 
 int print_all_subscribers(void){
     message m;
-    return ( _syscall(PM_PROC_NR,TOPIC_LOOKUP, &m) );
+    return ( _syscall(PM_PROC_NR, PRINT_SUBSCRIBERS, &m) );
 }
 
 int print_all_publishers(void){
     message m;
-    return ( _syscall(PM_PROC_NR,TOPIC_LOOKUP, &m) );
+    return ( _syscall(PM_PROC_NR,PRINT_PUBLISHERS, &m) );
 }
 int topic_delete(const char * name){
     message m;
     strcpy(m.m3_ca1,name);
     m.m1_i1=getpid();
-    return ( _syscall(PM_PROC_NR,TOPIC_RETRIEVE, &m) );
+    return ( _syscall(PM_PROC_NR,TOPIC_DELETE, &m) );
 }

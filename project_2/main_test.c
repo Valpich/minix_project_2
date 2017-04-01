@@ -4,11 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int clean_stdin(){
-    while (getchar()!='\n');
-    return 1;
-}
-
 int continueProgram(){
     char choice;
     int resultYes;
@@ -17,7 +12,6 @@ int continueProgram(){
     do {
         puts("----------- Continue(y/n) :");
         c = getchar();
-        clean_stdin();
         resultYes = c == 'y' ? 1 : 0;
         resultNo = c == 'n' ? 1 : 0;
     }while(!(resultYes == 1 || resultNo == 1));
@@ -44,8 +38,7 @@ int main(){
     puts("");
     do{
         puts("Enter your choice:");
-    } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9);
-    clean_stdin();
+    } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n')) || operationSelectedNumber<1 || operationSelectedNumber>9);
     switch (operationSelectedNumber) {
       case 1:
         puts("TOPIC CREATE");
@@ -56,7 +49,6 @@ int main(){
         }else{
           puts("Topic not created");
         }
-        clean_stdin();
         continueResult = continueProgram();
       break;
       case 2:
@@ -70,7 +62,6 @@ int main(){
         puts("Enter the Topic you want to be register as a publisher:");
         scanf("%[^\n]%*c", topicName);
         topic_publisher(topicName);
-        clean_stdin();
         continueResult = continueProgram();
       break;
       case 4:
@@ -79,7 +70,6 @@ int main(){
         puts("Enter the Topic you want to be register as a subscriber:");
         scanf("%[^\n]%*c", topicName);
         topic_subscriber(topicName);
-        clean_stdin();
         continueResult = continueProgram();
       break;
       case 5:
@@ -98,7 +88,6 @@ int main(){
         puts("Enter the Content of your topic (max. 100 char):");
         scanf("%[^\n]%*c", topicContent);
         topic_publish(topicName, topicContent);
-        clean_stdin();
         continueResult = continueProgram();
       break;
       case 8:
@@ -106,7 +95,6 @@ int main(){
         puts("Enter the Topic you want to be retrieve a message:");
         scanf("%[^\n]%*c", topicName);;
         topic_retrieve(topicName);
-        clean_stdin();
         continueResult = continueProgram();
       break;
       case 9:

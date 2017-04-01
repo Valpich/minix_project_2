@@ -4,6 +4,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#define MAX_TOPIC_NAME 20
+#define MAX_MSG_CONTENT 100
+
 #define INVALID_POSITION -1
 #define INVALID_PID -1
 #define INVALID_ID -1

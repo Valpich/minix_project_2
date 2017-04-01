@@ -67,7 +67,7 @@ int main(){
         puts("REGISTER AS PUBLISHER");
         topic_lookup();
         puts("Enter the Topic you want to be register as a publisher:");
-        scanf("%s",TopicName);
+        fgets(TopicName, MAX_TOPIC_NAME, stdin);
         topic_publisher(TopicName);
         clean_stdin();
         continueResult = continueProgram();
@@ -76,7 +76,7 @@ int main(){
         puts("REGISTER AS SUBSCRIBER");
         topic_lookup();
         puts("Enter the Topic you want to be register as a subscriber:");
-        scanf("%s",TopicName);
+        fgets(TopicName, MAX_TOPIC_NAME, stdin);
         topic_subscriber(TopicName);
         clean_stdin();
         continueResult = continueProgram();
@@ -93,17 +93,18 @@ int main(){
         puts("PUBLISH");
         topic_lookup();
         puts("Enter the Topic you want to publish into:");
-        scanf("%s", TopicName);
+        fgets(TopicName, MAX_TOPIC_NAME, stdin);
         puts("Enter the Content of your topic (max. 100 char):");
-        scanf("%s", TopicContent);
+        fgets(TopicContent, MAX_TOPIC_CONTENT, stdin);
         topic_publish(TopicName, TopicContent);
         clean_stdin();
         continueResult = continueProgram();
       break;
       case 8:
         puts("RETRIEVE");
+        topic_lookup();
         puts("Enter the Topic you want to be retrieve a message:");
-        scanf("%s",TopicName);
+        fgets(TopicName, MAX_TOPIC_NAME, stdin);
         topic_retrieve(TopicName);
         clean_stdin();
         continueResult = continueProgram();

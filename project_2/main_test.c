@@ -17,6 +17,7 @@ int main(){
   char c;
   do{
     puts("----------- Welcome -----------");
+    printf("My pid is: %d.\n",getpid());
     puts("1. Create new TOPIC (TopicCreate)");
     puts("2. Show Available Topics (TopicLookup)");
     puts("3. Register as Publisher (TopicPublisher)");

@@ -335,7 +335,7 @@ int doInit(){
         subscribers[i].toString = toStringSubscriber;
     }
     for(i = 0; i<MAX_USR; i++){
-        publishers[i].pid_publisher= INVALID_PID;
+        publishers[i].pid_publisher = INVALID_PID;
         int j = 0;
         for(j = 0; j<MAX_TOPIC; j++){
             char * name = malloc(sizeof("\0"));
@@ -366,7 +366,7 @@ Topic * findTopicByName(const char * name){
 Subscriber * findSubscriberByPid(const pid_t user_pid) {
     int i = 0;
     for(i =0;i<MAX_USR; i++){
-        if(subscribers[i].pid_subscriber == user_pid && topic->id!= INVALID_PID){
+        if(subscribers[i].pid_subscriber == user_pid && user_pid != INVALID_PID){
             return &subscribers[i];
         }
     }
@@ -376,7 +376,7 @@ Subscriber * findSubscriberByPid(const pid_t user_pid) {
 Publisher * findPublisherById(pid_t user_pid){
     int i = 0;
     for(i=0;i<MAX_USR;i++){
-        if(publishers[i].pid_publisher == user_pid && topic->id != INVALID_PID){
+        if(publishers[i].pid_publisher == user_pid && user_pid != INVALID_PID){
             return &publishers[i];
         }
     }
@@ -386,7 +386,7 @@ Publisher * findPublisherById(pid_t user_pid){
 int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic){
     int i = 0;
     for(i =0;i<MAX_TOPIC; i++){
-        if(subscriber->userTopic[i].id == topic->id && topic->id!= INVALID_ID){
+        if(subscriber->userTopic[i].id == topic->id && topic->id != INVALID_ID){
             return i;
         }
     }
@@ -422,7 +422,7 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
     int i = 0;
     int j = 0;
     for(i = 0; i<MAX_USR; i++){
-        if(publishers[i].pid_publisher == publisher->pid_publisher && publisher->pid_publishe != INVALID_PID){
+        if(publishers[i].pid_publisher == publisher->pid_publisher && publisher->pid_publisher != INVALID_PID){
             for(j = 0; j<MAX_TOPIC; j++) {
                 if (strcmp(publishers[i].topicNames[j], topicName) == 0) {
                     puts("User registred as publisher");

@@ -243,6 +243,7 @@ int do_topic_publish(void){
     char topic_content[MAX_MSG_CONTENT];
     sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p1, PM_PROC_NR, (vir_bytes) topic_name ,MAX_TOPIC_NAME);
     sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p2, PM_PROC_NR, (vir_bytes) topic_content ,MAX_MSG_CONTENT);
+    printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, topic_name);
     int id,returnValue = INVALID_ID;
 #ifdef MINIX
     id=m_in.m1_i1;
@@ -335,7 +336,7 @@ int doInit(){
         subscribers[i].toString = toStringSubscriber;
     }
     for(i = 0; i<MAX_USR; i++){
-        publishers[i].pid_publisher = INVALID_PID;
+        publishers[i].pid_publisher= INVALID_PID;
         int j = 0;
         for(j = 0; j<MAX_TOPIC; j++){
             char * name = malloc(sizeof("\0"));
@@ -366,7 +367,7 @@ Topic * findTopicByName(const char * name){
 Subscriber * findSubscriberByPid(const pid_t user_pid) {
     int i = 0;
     for(i =0;i<MAX_USR; i++){
-        if(subscribers[i].pid_subscriber == user_pid && user_pid != INVALID_PID){
+        if(subscribers[i].pid_subscriber == user_pid){
             return &subscribers[i];
         }
     }
@@ -376,7 +377,7 @@ Subscriber * findSubscriberByPid(const pid_t user_pid) {
 Publisher * findPublisherById(pid_t user_pid){
     int i = 0;
     for(i=0;i<MAX_USR;i++){
-        if(publishers[i].pid_publisher == user_pid && user_pid != INVALID_PID){
+        if(publishers[i].pid_publisher == user_pid){
             return &publishers[i];
         }
     }
@@ -386,7 +387,7 @@ Publisher * findPublisherById(pid_t user_pid){
 int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic){
     int i = 0;
     for(i =0;i<MAX_TOPIC; i++){
-        if(subscriber->userTopic[i].id == topic->id && topic->id != INVALID_ID){
+        if(subscriber->userTopic[i].id == topic->id){
             return i;
         }
     }
@@ -422,7 +423,7 @@ bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publis
     int i = 0;
     int j = 0;
     for(i = 0; i<MAX_USR; i++){
-        if(publishers[i].pid_publisher == publisher->pid_publisher && publisher->pid_publisher != INVALID_PID){
+        if(publishers[i].pid_publisher == publisher->pid_publisher){
             for(j = 0; j<MAX_TOPIC; j++) {
                 if (strcmp(publishers[i].topicNames[j], topicName) == 0) {
                     puts("User registred as publisher");
@@ -573,13 +574,15 @@ int topic_publisher(const char * name, pid_t user_pid){
 
 bool subscribe_to_topic(const char * name, pid_t user_pid){
     int returnValue = is_ID_set(name,user_pid);
-    printf("returnValue is %d\n.",returnValue);
-    if(returnValue != INVALID_POSITION)
+    if(returnValue != INVALID_POSITION){
+        printf("User successfully subscribed to topic\n");
         return true;
+    }
     returnValue  = subscribers_init(name,user_pid);
-    printf("returnValue is %d\n.",returnValue);
-    if(returnValue != INVALID_POSITION)
+    if(returnValue != INVALID_POSITION){
+        printf("User successfully subscribed to topic\n");
         return true;
+    }
     return false;
 }
 
@@ -610,6 +613,7 @@ int publish_into_all_user_topic(Topic * topic, const char * msg){
         int j = 0;
         for(j=0;j<MAX_TOPIC;j++){
             if(subscribers[i].userTopic[j].id == topic->id && topic->id != INVALID_ID) {
+                puts("PUBLISH");
                 publish_into_user_topic(&subscribers[i].userTopic[j], msg, slot);
             }
         }
@@ -621,10 +625,8 @@ int publish_into_all_user_topic(Topic * topic, const char * msg){
 int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher){
     printf("Start publishing message into a userTopic.\n");
     if(userIsRegistredAsPublisher(topicName, publisher)){
-        printf("TRY TO FIND TOPIC.\n");
         Topic * topic = findTopicByName(topicName);
         if(topic == NULL){
-            printf("TOPIC NOT FOUND.\n");
             return TOPIC_NOT_FOUND;
         }
         enter_critical_region_topic(topic->id);

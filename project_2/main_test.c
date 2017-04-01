@@ -26,8 +26,8 @@ int continueProgram(){
 
 int main(){
   int operationSelectedNumber;
-  char TopicName[MAX_TOPIC_NAME];
-  char TopicContent[MAX_MSG_CONTENT];
+  char topicName[MAX_TOPIC_NAME];
+  char topicContent[MAX_MSG_CONTENT];
   int continueResult = 1;
   char c;
   do{
@@ -49,7 +49,7 @@ int main(){
       case 1:
         puts("TOPIC CREATE");
         puts("Enter Topic Name: ");
-        scanf("%s", TopicName);
+        scanf("%[^\n]%*c", topicName);
         if(topic_create(TopicName) == DO_TOPIC_CREATE_SUCCESS_RETURN){
           puts("Topic created !");
         }else{
@@ -67,8 +67,8 @@ int main(){
         puts("REGISTER AS PUBLISHER");
         topic_lookup();
         puts("Enter the Topic you want to be register as a publisher:");
-        fgets(TopicName, MAX_TOPIC_NAME, stdin);
-        topic_publisher(TopicName);
+        scanf("%[^\n]%*c", topicName);
+        topic_publisher(topicName);
         clean_stdin();
         continueResult = continueProgram();
       break;
@@ -76,8 +76,8 @@ int main(){
         puts("REGISTER AS SUBSCRIBER");
         topic_lookup();
         puts("Enter the Topic you want to be register as a subscriber:");
-        fgets(TopicName, MAX_TOPIC_NAME, stdin);
-        topic_subscriber(TopicName);
+        scanf("%[^\n]%*c", topicName);
+        topic_subscriber(topicName);
         clean_stdin();
         continueResult = continueProgram();
       break;
@@ -93,19 +93,18 @@ int main(){
         puts("PUBLISH");
         topic_lookup();
         puts("Enter the Topic you want to publish into:");
-        fgets(TopicName, MAX_TOPIC_NAME, stdin);
+        scanf("%[^\n]%*c", topicName);
         puts("Enter the Content of your topic (max. 100 char):");
-        fgets(TopicContent, MAX_MSG_CONTENT, stdin);
-        topic_publish(TopicName, TopicContent);
+        scanf "%[^\n]%*c", topicContent);
+        topic_publish(topicName, topicContent);
         clean_stdin();
         continueResult = continueProgram();
       break;
       case 8:
         puts("RETRIEVE");
-        topic_lookup();
         puts("Enter the Topic you want to be retrieve a message:");
-        fgets(TopicName, MAX_TOPIC_NAME, stdin);
-        topic_retrieve(TopicName);
+        scanf("%[^\n]%*c", topicName);;
+        topic_retrieve(topicName);
         clean_stdin();
         continueResult = continueProgram();
       break;

@@ -240,18 +240,18 @@ int do_topic_publish(void){
         doInit();
     }
     printf("do_topic_publish\n");
-    char topic_name[MAX_TOPIC_NAME];
-    char topic_content[MAX_MSG_CONTENT];
-    sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p1, PM_PROC_NR, (vir_bytes) topic_name ,MAX_TOPIC_NAME);
-    sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p2, PM_PROC_NR, (vir_bytes) topic_content ,MAX_MSG_CONTENT);
-    printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, topic_name);
+    char *topic_name = malloc(sizeof(m_in.m6_p1));
+    char *topic_content = malloc(sizeof(m_in.m6_p2));
     int id,returnValue = INVALID_ID;
 #ifdef MINIX
+    strcpy(topic_name,m_in.m6_p1);
+    strcpy(topic_content,m_in.m6_p2);
     id=m_in.m1_i1;
-    printf("Publisher pid is: %d \n",id);
     Publisher * publisher = findPublisherById(id);
+    printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, topic_name);
     returnValue = publish_msg_into_topic(topic_name, topic_content, publisher);
 #endif
+    toStringData();
     return returnValue;
 }
 
@@ -270,7 +270,7 @@ int do_retrieve(void){
     msg = retrieve_msg_of_topic(id, topic_name);
 #endif
     if(msg != NULL){
-        printf("Message is %s\n.", msg);
+        printf("%s", msg);
         return DO_RETRIEVE_SUCCESS_RETURN;
     }else {
         printf("Noting to retrieve.\n");
@@ -673,3 +673,19 @@ void printAllPublisher(){
 /********* END OF CORE METHODS **********/
 
 /********* END OF INTERNAL METHODS **********/
+
+/********* BEGIN OF DEBUG METHODS **********/
+
+void toStringData(){
+    int i = 0;
+    for(i = 0; i<MAX_USR; i++){
+        if(subscribers[i].pid_subscriber != INVALID_PID){
+            subscribers[i].toString(&subscribers[i]);
+        }
+        if(publishers[i].pid_publisher != INVALID_PID){
+            publishers[i].toString(&publishers[i]);
+        }
+    }
+}
+
+/********* END OF DEBUG METHODS **********/

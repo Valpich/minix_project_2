@@ -45,6 +45,7 @@ int main(){
     do{
         puts("Enter your choice:");
     } while (((scanf("%d%c", &operationSelectedNumber, &c)!=2 || c!='\n') && clean_stdin()) || operationSelectedNumber<1 || operationSelectedNumber>9);
+    clean_stdin();
     switch (operationSelectedNumber) {
       case 1:
         puts("TOPIC CREATE");

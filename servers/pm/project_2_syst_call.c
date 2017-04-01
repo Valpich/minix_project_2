@@ -243,7 +243,7 @@ int do_topic_publish(void){
     char topic_name[MAX_TOPIC_NAME];
     char topic_content[MAX_MSG_CONTENT];
     sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p1, PM_PROC_NR, (vir_bytes) topic_name ,MAX_TOPIC_NAME);
-    sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p2, PM_PROC_NR, (vir_bytes) topic_content ,MAX_MSG_CONTENT;
+    sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p2, PM_PROC_NR, (vir_bytes) topic_content ,MAX_MSG_CONTENT);
     printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, topic_name);
     int id,returnValue = INVALID_ID;
 #ifdef MINIX

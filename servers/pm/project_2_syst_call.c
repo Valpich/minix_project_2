@@ -278,11 +278,13 @@ int do_retrieve(void){
 }
 
 int do_print_subscribers(void){
+    printf("do_print_subscribers\n");
     printAllSubscribers();
     return DO_PRINT_SUBSCRIBERS_SUCCESS_RETURN;
 }
 
 int do_print_publishers(void){
+    printf("do_print_subscribers\n");
     printAllPublishers();
     return DO_PRINT_PUBLISHERS_SUCCESS_RETURN;
 }
@@ -305,6 +307,7 @@ int do_topic_delete(void){
     }
     return DO_PRINT_PUBLISHERS_SUCCESS_RETURN;
 }
+
 /********* END OF SYSTEM CALL METHODS **********/
 
 /********* BEGIN OF INTERNAL METHODS **********/
@@ -563,16 +566,12 @@ int topic_publisher(const char * name, pid_t user_pid){
 bool subscribe_to_topic(const char * name, pid_t user_pid){
     int returnValue = is_ID_set(name,user_pid);
     printf("returnValue is %d\n.",returnValue);
-    if(returnValue != INVALID_POSITION){
-      printf("User successfully subscribed to topic\n");
-      return true;
-    }
+    if(returnValue != INVALID_POSITION)
+        return true;
     returnValue  = subscribers_init(name,user_pid);
     printf("returnValue is %d\n.",returnValue);
-    if(returnValue != INVALID_POSITION){
-      printf("User successfully subscribed to topic\n");
-      return true;
-    }
+    if(returnValue != INVALID_POSITION)
+        return true;
     return false;
 }
 

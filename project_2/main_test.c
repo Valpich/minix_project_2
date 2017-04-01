@@ -95,7 +95,7 @@ int main(){
         puts("Enter the Topic you want to publish into:");
         fgets(TopicName, MAX_TOPIC_NAME, stdin);
         puts("Enter the Content of your topic (max. 100 char):");
-        fgets(TopicContent, MAX_TOPIC_CONTENT, stdin);
+        fgets(TopicContent, MAX_MSG_CONTENT, stdin);
         topic_publish(TopicName, TopicContent);
         clean_stdin();
         continueResult = continueProgram();

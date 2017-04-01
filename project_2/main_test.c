@@ -95,7 +95,7 @@ int main(){
         puts("Enter the Topic you want to publish into:");
         scanf("%[^\n]%*c", topicName);
         puts("Enter the Content of your topic (max. 100 char):");
-        scanf "%[^\n]%*c", topicContent);
+        scanf("%[^\n]%*c", topicContent);
         topic_publish(topicName, topicContent);
         clean_stdin();
         continueResult = continueProgram();

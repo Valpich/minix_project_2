@@ -30,6 +30,9 @@
 #define MAX_MSG 5   /* Number of message for each topic */
 #define MAX_TOPIC 10    /* Number of allowed topics for each topic */
 #define MAX_USR 30  /* Number of allowed user */
+#define MAX_TOPIC_NAME 20
+#define MAX_MSG_CONTENT 100
+
 #define INVALID_POSITION -1
 #define INVALID_PID -1
 #define INVALID_ID -1

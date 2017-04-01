@@ -26,8 +26,8 @@ int continueProgram(){
 
 int main(){
   int operationSelectedNumber;
-  char TopicName[100];
-  char TopicContent[100];
+  char TopicName[MAX_TOPIC_NAME];
+  char TopicContent[MAX_MSG_CONTENT];
   int continueResult = 1;
   char c;
   do{

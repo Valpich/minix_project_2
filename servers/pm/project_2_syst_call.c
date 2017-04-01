@@ -243,7 +243,6 @@ int do_topic_publish(void){
     char topic_content[MAX_MSG_CONTENT];
     sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p1, PM_PROC_NR, (vir_bytes) topic_name ,MAX_TOPIC_NAME);
     sys_datacopy(m_in.m_source, (vir_bytes) m_in.m1_p2, PM_PROC_NR, (vir_bytes) topic_content ,MAX_MSG_CONTENT);
-    printf("Trying to publish the message: \"%s\" for the topic %s\n",topic_content, topic_name);
     int id,returnValue = INVALID_ID;
 #ifdef MINIX
     id=m_in.m1_i1;
@@ -613,7 +612,6 @@ int publish_into_all_user_topic(Topic * topic, const char * msg){
         int j = 0;
         for(j=0;j<MAX_TOPIC;j++){
             if(subscribers[i].userTopic[j].id == topic->id && topic->id != INVALID_ID) {
-                puts("PUBLISH");
                 publish_into_user_topic(&subscribers[i].userTopic[j], msg, slot);
             }
         }

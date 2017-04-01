@@ -290,7 +290,7 @@ int do_print_publishers(void){
     if(initDone == false){
         doInit();
     }
-    printf("do_print_subscribers\n");
+    printf("do_print_publishers\n");
     printAllPublishers();
     return DO_PRINT_PUBLISHERS_SUCCESS_RETURN;
 }

@@ -196,4 +196,10 @@ void printAllPublisher();
 
 /********* END OF INTERNAL METHODS **********/
 
+/********* BEGIN OF DEBUG METHODS **********/
+
+void toStringData();
+
+/********* END OF DEBUG METHODS **********/
+
 #endif /** PROJECT_2_SYST_CALL_H */

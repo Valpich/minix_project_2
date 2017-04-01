@@ -183,7 +183,7 @@ bool subscribe_to_topic(const char * name, pid_t user_pid);
 
 void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation);
 
-int publish_into_all_user_topic(const Topic * topic, const char * msg);
+int publish_into_all_user_topic(Topic * topic, const char * msg);
 
 int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher);
 

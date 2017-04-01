@@ -562,7 +562,7 @@ void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int 
 /**
  * @Precondition Is into a critical region
  */
-int publish_into_all_user_topic(const Topic * topic, const char * msg){
+int publish_into_all_user_topic(Topic * topic, const char * msg){
     printf("Publishing into all user userTopic.\n");
     int i = 0;
     int slot = findAndLockAvailableSlot(topic);

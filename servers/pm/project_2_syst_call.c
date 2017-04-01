@@ -278,18 +278,27 @@ int do_retrieve(void){
 }
 
 int do_print_subscribers(void){
+    if(initDone == false){
+        doInit();
+    }
     printf("do_print_subscribers\n");
     printAllSubscribers();
     return DO_PRINT_SUBSCRIBERS_SUCCESS_RETURN;
 }
 
 int do_print_publishers(void){
+    if(initDone == false){
+        doInit();
+    }
     printf("do_print_subscribers\n");
     printAllPublishers();
     return DO_PRINT_PUBLISHERS_SUCCESS_RETURN;
 }
 
 int do_topic_delete(void){
+    if(initDone == false){
+        doInit();
+    }
     if(initDone == false){
         doInit();
     }

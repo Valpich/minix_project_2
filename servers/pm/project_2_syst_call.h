@@ -101,34 +101,73 @@ typedef struct Topics{                                   /* Define Topics as a s
 
 /********* BEGIN OF TO STRING FUNCTIONS **********/
 
+/**
+ * @Param: *userTopic, the list of UserTopic
+ */
 void toStringUserTopic(const UserTopic * userTopic);     /* Display available UserTopic */
 
+/**
+ * @Param: *subscriber, the list of Subscriber
+ */
 void toStringSubscriber(const Subscriber * subscriber);  /* Display available Subscribers */
 
+/**
+ * @Param: *publisher, the list of Publisher
+ */
 void toStringPublisher(const Publisher * publisher);     /* Display available Publishers*/
 
+/**
+ * @Param: *topic, the list of Topic
+ */
 void toStringTopic(const Topic * topic);                 /* Display available Topic */
 
+/**
+ * @Param: *topics, the list of Topics
+ */
 void toStringTopics(const Topics * topic);               /* Display available Topics */
 
+/**
+ * @Param: publisher[], the list all existing Publisher
+ */
 void toStringAllPublisher(const Publisher publisher[]); /* Display all Publishers */
 
+/**
+ * @Param: subscriber[], the list of all existing Subscriber
+ */
 void toStringAllSubscriber(const Subscriber subscriber[]);  /* Display all Subscribers */
 
 /********* END OF TO STRING FUNCTIONS **********/
 
 /********* BEGIN OF SEMAPHORE METHODS **********/
 
+/**
+ * @Param: semaphore, the semaphore you want to give back
+ */
 void down(semaphore * s);                                 /* Give back Semaphore */
 
+/**
+ * @Param: semaphore, the semaphore you want to take
+ */
 void up(semaphore * s);                                   /* Take Semaphore */
 
+/**
+ * @Param: topic_id, the topic in which you want to enter its critical region by specified its id
+ */
 void enter_critical_region_topic(int topic_id);           /* Enter the critical region for specified Topic id */
 
+/**
+ * @Param: topic_id, the topic in which you want to leave its critical region by specified its id
+ */
 void leave_critical_region_topic(int topic_id);           /* Leave the critical region for specified Topic id */
 
+/**
+ * @Param: semaphore, the semaphore you want to check
+ */
 void checkNotDown(semaphore * s);                         /* Check that the Semaphore haven't been giving back */
 
+/**
+ * @Param: topic_id, the topic in which you want to know if its critical region is still read by specified its id
+ */
 void wait_read_critical_region_topic(int topic_id);       /* Wait that other process have finished to read the critical region of specified Topic id */
 
 /********* END OF SEMAPHORE METHODS **********/
@@ -161,22 +200,54 @@ int do_topic_delete(void);                                /* Syscall of do_topic
 
 int doInit();                                                                           /* Initialization of Publishers, Subscribers and Topics */
 
+/**
+ * @Param: user_pid, the pid for which you want to know its topic
+ */
 Topic * findTopicByName(const char * user_pid);                                         /* Return a Topic id for a specified Topic name */
 
+/**
+ * @Param: user_pid, the pid for which you want to know its subscriber
+ */
 Subscriber * findSubscriberByPid(const pid_t user_pid);                                 /* Return a Subscriber name for a specified Subscriber pid */
 
+/**
+ * @Param: user_pid, the pid for which you want to know its publisher
+ */
 Publisher * findPublisherById(pid_t user_pid);                                          /* Return a Publisher name for a specified Publisher id */
 
+/**
+ * @Param: *subscriber, the specified subscriber you want to know its position
+ * @Param: *topic, the specified topic for the specified subscriber
+ */
 int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);          /* Return the position of a Subscriber for a specified Topic */
 
+/**
+ * @Param: *topic, the topic you want to know if there is space left for it
+ */
 int findAndLockAvailableSlot(Topic * topic);                                            /* Return if there is an available slot for a Topic, if possible, it's locking the position for this Topic */
 
+/**
+ * @Param: *topic, the topic you want to know if its message have been read
+ * @Param: slot, the slot of the topic you want to know if the message contains have been read
+ */
 bool checkAllRetrieved(const Topic * topic, const int slot);                            /* Return if all Messages have been Retrieved by the Subscribers for a specified Topic */
 
+/**
+ * @Param: *topicName, the topic you want to check
+ * @Param: *publisher, the publisher you want to check for specified topic
+ */
 bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher);   /* Return if an User is Registred As A Publisher for a specified Publisher and a Specified Topic */
 
+/**
+ * @Param: *name, the topic you want to check
+ * @Param: user_pid, the pid of the user you want to check if its a subscriber
+ */
 int is_ID_set(const char * name, pid_t user_pid);                                       /* Return if a Subscriber have is ID set for a Topic for a specified Subscriber name and pid */
 
+/**
+ * @Param: *name, the topic you want to subscribe to
+ * @Param: user_pid, the user you want to set as a subscriber for the specified topic
+ */
 int subscribers_init(const char * name, pid_t user_pid);                                /* Return the Initialization of a Subscriber for a specified Topic */
 
 /********* END OF UTILITY METHODS **********/
@@ -185,22 +256,57 @@ int subscribers_init(const char * name, pid_t user_pid);                        
 
 void lookup();                                                                                       /* Display the list of all Topics Available*/
 
+/**
+ * @Param: *name, the name of the topic you want to create
+ */
 bool create_topic(const char * name);                                                                /* Create a Topic for a Specified Name */
 
+/**
+ * @Param: *name, the name of the topic you want to be a publisher
+ * @Param: user_pid, the pid of the user you want to set as a publisher
+ */
 int topic_publisher(const char * name, pid_t user_pid);                                              /* Set a specified User as a Publisher by is id for a selected Topic */
 
+/**
+ * @Param: *name, the name of the topic you want to be a subscriber
+ * @Param: user_pid, the pid of the user you want to set as a subscriber
+ */
 bool subscribe_to_topic(const char * name, pid_t user_pid);                                          /* Set a specified User as a Subscriber by is id of a selected Topic*/
 
+/**
+ * @Param: *userTopic, the list of all UserTopic
+ * @Param: *msg, the message you want to publish into UserTopic
+ * @Param: msgLocation, the location of the message you want to send
+ */
 void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation);        /* Publish a message into a specified UserTopic */
 
+/**
+ * @Param: *topic, the list of all Topic
+ * @Param: *msg, the message you want to publish
+ */
 int publish_into_all_user_topic(Topic * topic, const char * msg);                                    /* Publish a message into all UserTopic */
 
+/**
+ * @Param: *topicName, the topic in which you want to publish
+ * @Param: *msg, the message you want to publish for the specified topic
+ * @Param: *publisher, the publisher that is going to publish the message
+ */
 int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher);   /* Publish a message into a specified Topic */
 
+/**
+ * @Param: user_pid, the pid of the user who want to retrieve a message from a specified topic
+ * @Param: *topicName, the topic name for which you want to retrieve a message
+ */
 char * retrieve_msg_of_topic(const pid_t user_pid, const char * topicName);                          /* Retrieve a message for a specified Subscriber for a a specified Topic */
 
+/**
+ * @Param: *userTopic, the user topic in which you want to read message
+ */
 char * readMessage(UserTopic *userTopic);                                                            /* Read a Message in a specified UserTopic */
 
+/**
+ * @Param: *name, the name of the topic you want to delete
+ */
 bool delete_topic(const char * name);                                                                /* Delete a specified Topic */
 
 void printAllPublishers();                                                                           /* Display the list of All Registered Publishers */

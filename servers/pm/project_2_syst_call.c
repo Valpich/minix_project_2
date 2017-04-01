@@ -562,13 +562,9 @@ void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int 
 /**
  * @Precondition Is into a critical region
  */
-int publish_into_all_user_topic(const char * topicName, const char * msg){
+int publish_into_all_user_topic(const Topic * topic, const char * msg){
     printf("Publishing into all user userTopic.\n");
     int i = 0;
-    Topic  * topic = findTopicByName(topicName);
-    if(topic == NULL){
-        return TOPIC_NOT_FOUND;
-    }
     int slot = findAndLockAvailableSlot(topic);
     if(slot == INVALID_POSITION){
         return NO_SLOT_AVAILABLE;
@@ -576,7 +572,7 @@ int publish_into_all_user_topic(const char * topicName, const char * msg){
     for(i=0;i<MAX_USR;i++){
         int j = 0;
         for(j=0;j<MAX_TOPIC;j++){
-            if(subscribers[i].userTopic[j].id == topic->id) {
+            if(subscribers[i].userTopic[j].id == topic->id && topic->id != INVALID_ID) {
                 publish_into_user_topic(&subscribers[i].userTopic[j], msg, slot);
             }
         }
@@ -589,8 +585,11 @@ int publish_msg_into_topic(const char * topicName, const char * msg, const Publi
     printf("Start publishing message into a userTopic.\n");
     if(userIsRegistredAsPublisher(topicName, publisher)){
         Topic * topic = findTopicByName(topicName);
+        if(topic == NULL){
+            return TOPIC_NOT_FOUND;
+        }
         enter_critical_region_topic(topic->id);
-        int ret = publish_into_all_user_topic(topic->name,msg);
+        int ret = publish_into_all_user_topic(topic,msg);
         leave_critical_region_topic(topic->id);
         printf("End of publishing message into a userTopic.\n");
         if(ret >= 0 && ret <MAX_MSG){

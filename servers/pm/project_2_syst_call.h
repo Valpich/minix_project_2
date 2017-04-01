@@ -24,13 +24,12 @@
 #include <minix/vm.h>
 #include <machine/archtypes.h>
 #include <lib.h>
+#ifdef  MINIX
 
+#endif
 #define MAX_MSG 5   /* Number of message for each topic */
 #define MAX_TOPIC 10    /* Number of allowed topics for each topic */
 #define MAX_USR 30  /* Number of allowed user */
-#define MAX_TOPIC_NAME 20
-#define MAX_MSG_CONTENT 100
-
 #define INVALID_POSITION -1
 #define INVALID_PID -1
 #define INVALID_ID -1
@@ -151,9 +150,9 @@ int doInit();
 
 Topic * findTopicByName(const char * name);
 
-Subscriber * findSubscriberByPid(const pid_t user_pid);
+Subscriber * findSubscriberByPid(const pid_t pid);
 
-Publisher * findPublisherById(pid_t user_pid);
+Publisher * findPublisherById(pid_t id);
 
 int findUserTopicPosition(const Subscriber * subscriber, const Topic * topic);
 
@@ -163,9 +162,9 @@ bool checkAllRetrieved(const Topic * topic, const int slot);
 
 bool userIsRegistredAsPublisher(const char * topicName, const Publisher * publisher);
 
-int is_ID_set(const char * name, pid_t user_pid);
+int is_ID_set(const char * name, pid_t id);
 
-int subscribers_init(const char * name, pid_t user_pid);
+int subscribers_init(const char * name, pid_t id);
 
 /********* END OF UTILITY METHODS **********/
 
@@ -175,13 +174,13 @@ void lookup();
 
 bool create_topic(const char * name);
 
-int topic_publisher(const char * name, pid_t user_pid);
+int topic_publisher(const char * name, pid_t current_pid);
 
 bool subscribe_to_topic(const char * name, pid_t user_pid);
 
 void publish_into_user_topic(UserTopic * userTopic, const char * msg, const int msgLocation);
 
-int publish_into_all_user_topic(const char * topicName, const char * msg);
+int publish_into_all_user_topic(const Topic * topic, const char * msg);
 
 int publish_msg_into_topic(const char * topicName, const char * msg, const Publisher * publisher);
 
@@ -196,11 +195,5 @@ void printAllPublisher();
 /********* END OF CORE METHODS **********/
 
 /********* END OF INTERNAL METHODS **********/
-
-/********* BEGIN OF DEBUG METHODS **********/
-
-void toStringData();
-
-/********* END OF DEBUG METHODS **********/
 
 #endif /** PROJECT_2_SYST_CALL_H */

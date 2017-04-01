@@ -50,7 +50,7 @@ int main(){
         puts("TOPIC CREATE");
         puts("Enter Topic Name: ");
         scanf("%[^\n]%*c", topicName);
-        if(topic_create(TopicName) == DO_TOPIC_CREATE_SUCCESS_RETURN){
+        if(topic_create(topicName) == DO_TOPIC_CREATE_SUCCESS_RETURN){
           puts("Topic created !");
         }else{
           puts("Topic not created");

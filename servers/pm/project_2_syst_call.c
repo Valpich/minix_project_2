@@ -563,12 +563,16 @@ int topic_publisher(const char * name, pid_t user_pid){
 bool subscribe_to_topic(const char * name, pid_t user_pid){
     int returnValue = is_ID_set(name,user_pid);
     printf("returnValue is %d\n.",returnValue);
-    if(returnValue != INVALID_POSITION)
-        return true;
+    if(returnValue != INVALID_POSITION){
+      printf("User successfully subscribed to topic\n");
+      return true;
+    }
     returnValue  = subscribers_init(name,user_pid);
     printf("returnValue is %d\n.",returnValue);
-    if(returnValue != INVALID_POSITION)
-        return true;
+    if(returnValue != INVALID_POSITION){
+      printf("User successfully subscribed to topic\n");
+      return true;
+    }
     return false;
 }
 

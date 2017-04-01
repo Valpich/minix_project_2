@@ -112,3 +112,6 @@ int do_topic_publisher(void);
 int do_topic_subscriber(void);
 int do_topic_publish(void);
 int do_retrieve(void);
+int do_print_publishers(void);
+int do_print_subscribers(void);
+int do_topic_delete(void);

@@ -1,28 +1,28 @@
 #define NCALLS		 114	/* number of system calls allowed */
 
 /* In case it isn't obvious enough: this list is sorted numerically. */
-#define EXIT		   1 
-#define FORK		   2 
-#define READ		   3 
-#define WRITE		   4 
-#define OPEN		   5 
-#define CLOSE		   6 
+#define EXIT		   1
+#define FORK		   2
+#define READ		   3
+#define WRITE		   4
+#define OPEN		   5
+#define CLOSE		   6
 #define WAIT		   7
-#define CREAT		   8 
-#define LINK		   9 
-#define UNLINK		  10 
+#define CREAT		   8
+#define LINK		   9
+#define UNLINK		  10
 #define WAITPID		  11
-#define CHDIR		  12 
+#define CHDIR		  12
 #define TIME		  13
-#define MKNOD		  14 
-#define CHMOD		  15 
-#define CHOWN		  16 
+#define MKNOD		  14
+#define CHMOD		  15
+#define CHOWN		  16
 #define BRK		  17
 #define PREV_STAT	  18
 #define LSEEK		  19
 #define MINIX_GETPID	  20
-#define MOUNT		  21 
-#define UMOUNT		  22 
+#define MOUNT		  21
+#define UMOUNT		  22
 #define SETUID		  23
 #define GETUID		  24
 #define STIME		  25
@@ -30,25 +30,25 @@
 #define ALARM		  27
 #define PREV_FSTAT	  28
 #define PAUSE		  29
-#define UTIME		  30 
+#define UTIME		  30
 #define GETEPINFO	  31
 #define SETGROUPS	  32
-#define ACCESS		  33 
+#define ACCESS		  33
 #define GETGROUPS	  34
 
-// ADDITION FOR PROJECT 2 
+// ADDITION FOR PROJECT 2
 #define TOPIC_LOOKUP 35
 
-#define SYNC		  36 
+#define SYNC		  36
 #define KILL		  37
 #define RENAME		  38
 #define MKDIR		  39
 #define RMDIR		  40
-#define DUP		  41 
-#define PIPE		  42 
+#define DUP		  41
+#define PIPE		  42
 #define TIMES		  43
 
-// ADDITION FOR PROJECT 2 
+// ADDITION FOR PROJECT 2
 #define TOPIC_CREATE 44
 
 #define SYMLINK		  45
@@ -63,17 +63,17 @@
 #define IOCTL		  54
 #define FCNTL		  55
 
-// ADDITION FOR PROJECT 2 
+// ADDITION FOR PROJECT 2
 #define TOPIC_PUBLISHER 56
 
 #define FS_READY	  57
 
-// ADDITION FOR PROJECT 2 
+// ADDITION FOR PROJECT 2
 #define TOPIC_SUBSCRIBER 58
 
 #define EXEC		  59
-#define UMASK		  60 
-#define CHROOT		  61 
+#define UMASK		  60
+#define CHROOT		  61
 #define SETSID		  62
 #define GETPGRP		  63
 #define ITIMER		  64
@@ -82,7 +82,7 @@
 #define GETMCONTEXT       67
 #define SETMCONTEXT       68
 
-// ADDITION FOR PROJECT 2 
+// ADDITION FOR PROJECT 2
 #define TOPIC_PUBLISH 69
 #define TOPIC_RETRIEVE 70
 
@@ -96,6 +96,7 @@
 #define REBOOT		  76
 #define SVRCTL		  77
 #define SYSUNAME	  78
+#define PRINT_PUBLISHERS   79
 #define GETDENTS	  80	/* to VFS */
 #define LLSEEK		  81	/* to VFS */
 #define FSTATFS	 	  82	/* to VFS */
@@ -120,7 +121,9 @@
 #define PM_NEWEXEC	100	/* from VFS or RS to PM: new exec */
 #define SRV_FORK  	101	/* to PM: special fork call for RS */
 #define EXEC_RESTART	102	/* to PM: final part of exec for RS */
+#define PRINT_SUBSCRIBERS   103
 #define GETPROCNR	104	/* to PM */
+#define TOPIC_DELETE        105
 #define ISSETUGID	106	/* to PM: ask if process is tainted */
 #define GETEPINFO_O	107	/* to PM: get pid/uid/gid of an endpoint */
 #define SRV_KILL  	111	/* to PM: special kill call for RS */
@@ -129,8 +132,7 @@
 
 #define PM_GETSID	113	/* PM getsid() */
 
-#define TASK_REPLY	121	/* to VFS: reply code from drivers, not 
+#define TASK_REPLY	121	/* to VFS: reply code from drivers, not
 				 * really a standalone call.
 				 */
 #define MAPDRIVER      122     /* to VFS, map a device */
-

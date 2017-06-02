@@ -1,6 +1,6 @@
 # minix_project_2
 
-CS 551 Project 2: Publish and Subscribe IPCs (referencing JMS
+CS 551 Project 2: Publish and Subscribe IPCs (referencing JMS)
 
 Requirements:
 

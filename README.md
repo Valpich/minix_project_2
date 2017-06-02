@@ -1,4 +1,4 @@
-# src
+# minix_project_2
 
 CS 551 Project 2: Publish and Subscribe IPCs (referencing JMS
 
@@ -37,3 +37,7 @@ Can deadlock occur with your IPCs? If not, why? If yes, do you detect deadlock a
 If deadlock can occur, can you advise the programmer to avoid it?
 
 -> No deadlock
+
+Objectifs:
+
+Créer un système de communication interprocessus base sur le système de communication interprocessus de Java (JMS).
